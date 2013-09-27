@@ -70,12 +70,14 @@
 	XCTAssertNotNil( encrypted, @"" );
 	XCTAssertFalse( [encrypted isEqualToData:simpleData], @"" );
 	
+	// Make public key can not decrypt
+	NSData *failData = ACDecryptWithKey(encrypted, self.publickey);
+	XCTAssertNil( failData, @"" );
+	
 	NSData *decrypted = ACDecryptWithKey(encrypted, self.privatekey);
 	XCTAssertTrue( decrypted.length == simpleData.length, @"" );
 	NSString *decryptedString = [[NSString alloc] initWithData:decrypted encoding:NSUTF8StringEncoding];
 	XCTAssertTrue( [decryptedString isEqualToString:simpleString], @"" );
-	
-
 }
 
 @end
