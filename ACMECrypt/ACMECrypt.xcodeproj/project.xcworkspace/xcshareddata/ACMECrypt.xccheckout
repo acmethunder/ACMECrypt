@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>FC14F5EC-CCA7-4605-905B-903E107FCFC8</string>
+	<key>IDESourceControlProjectName</key>
+	<string>ACMECrypt</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>D7288063-B461-4D7F-8262-11E8E9B2CA2F</key>
+		<string>https://bitbucket.org/mdewolfe/acmecrypt.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>ACMECrypt/ACMECrypt.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>D7288063-B461-4D7F-8262-11E8E9B2CA2F</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://bitbucket.org/mdewolfe/acmecrypt.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>D7288063-B461-4D7F-8262-11E8E9B2CA2F</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>D7288063-B461-4D7F-8262-11E8E9B2CA2F</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ACMECrypt</string>
+		</dict>
+	</array>
+</dict>
+</plist>
