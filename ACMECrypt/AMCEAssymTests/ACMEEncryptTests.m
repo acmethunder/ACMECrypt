@@ -137,7 +137,10 @@
 	XCTAssertTrue( encrypted.length > 0, @"" );
 	XCTAssertFalse( [encrypted isEqualToData:helloData], @"" );
 	
-	NSData *decrypted = ACDecryptAES256(encrypted, self.aes256Key, self.iv);
+	NSData *decrypted = (__bridge NSData *)(ACDecryptAES256(
+															(__bridge CFDataRef)(encrypted),
+															(__bridge CFStringRef)(self.aes256Key),
+															(__bridge CFStringRef)(self.iv)) );
 	XCTAssertTrue( decrypted.length > 0, @"" );
 	XCTAssertFalse( [decrypted isEqualToData:encrypted], @"" );
 	XCTAssertTrue( [decrypted isEqualToData:helloData], @"" );
@@ -146,7 +149,7 @@
 	XCTAssertTrue( [decryptedString isEqualToString:helloString], @"" );
 }
 
--(void)testEncryptLargerJSON {
+-(void)testAES256EncryptLargerJSON {
 	NSString *jsonPath = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json"
 																		ofType:@"json"];
 	
@@ -170,7 +173,7 @@
 	XCTAssertTrue( encryptedJSON.length > 0, @"" );
 	XCTAssertFalse( [encryptedJSON isEqualToData:jsonData], @"" );
 	
-	NSData *decryptedJSON = ACDecryptAES256(encryptedJSON, self.aes256Key, self.iv );
+	NSData *decryptedJSON = (__bridge NSData *)(ACDecryptAES256((__bridge CFDataRef)(encryptedJSON), (__bridge CFStringRef)(self.aes256Key), (__bridge CFStringRef)(self.iv) ));
 	XCTAssertTrue( decryptedJSON.length > 0, @"" );
 	XCTAssertTrue( [decryptedJSON isEqualToData:jsonData], @"" );
 	

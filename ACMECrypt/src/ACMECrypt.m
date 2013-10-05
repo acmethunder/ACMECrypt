@@ -17,6 +17,10 @@ SecKeyRef ACGetPublicKeyX509(CFStringRef certPath) {
     SecKeyRef keyRef = NULL;
 	
 	CFIndex length = ( certPath ? CFStringGetLength(certPath) : (CFIndex)0 );
+	
+	if ( length < 1 ) {
+		return NULL;
+	}
     
     NSData *certData = [[NSData alloc] initWithContentsOfFile:(__bridge NSString *)(certPath)];
     if ( certData.length > 0 ) {
@@ -42,17 +46,17 @@ SecKeyRef ACGetPublicKeyX509(CFStringRef certPath) {
 
 #pragma mark Symmetric Encryption / Decryption
 
-CFDataRef ACEncryptAES256(CFDataRef data, CFStringRef key, CFStringRef initVector ) {
+CFDataRef ACEncryptAES256(CFDataRef data, CFStringRef key, CFStringRef initVector) {
     CFDataRef final = NULL;
 	
 	CFIndex dataLength = ( data ? CFDataGetLength(data) : (CFIndex)0 );
 	CFIndex keyLength  = ( key ? CFStringGetLength(key) : (CFIndex)0 );
 	CFIndex ivLength   = ( initVector ? CFStringGetLength(initVector) : (CFIndex)0 );
     
-    if ( (dataLength > 0) && (keyLength > 0) && (keyLength > 0) ) {
-		char *ivptr = malloc(ivLength);
-		memset(ivptr, 0, ivLength);
-		if ( ! CFStringGetCString(initVector, ivptr, sizeof(ivptr) * ivLength, kCFStringEncodingASCII) ) {
+    if ( (dataLength > 0) && (keyLength > 0) && (ivLength > 0) ) {
+		const char *ivptr = CFStringGetCStringPtr(initVector, kCFStringEncodingUTF8);
+
+		if ( ! ivptr ) {
 			return NULL;
 		}
 		
@@ -87,34 +91,39 @@ CFDataRef ACEncryptAES256(CFDataRef data, CFStringRef key, CFStringRef initVecto
         }
         
         free(cipherbuffer);
-		free(ivptr);
     }
     
     
     return final;
 }
 
-NSData* ACDecryptAES256(NSData *data, NSString *key, NSString *initVector) {
-	NSData *final = 0;
+CFDataRef ACDecryptAES256(CFDataRef data, CFStringRef key, CFStringRef initVector) {
+	CFDataRef final = 0;
 	
-	if ( (data.length > 0) && (key.length > 0) && (initVector.length > 0) ) {
-		const char *ptr = [initVector cStringUsingEncoding:NSUTF8StringEncoding];
+	CFIndex dataLength = ( data ? CFDataGetLength(data) : 0 );
+	CFIndex keyLength  = ( key ? CFStringGetLength(key) : 0 );
+	CFIndex ivLength   = ( initVector ? CFStringGetLength(initVector) : 0 );
+	
+	if ( (dataLength > 0) && (keyLength > 0) && (ivLength > 0) ) {
+		const char *ivptr = CFStringGetCStringPtr(initVector, kCFStringEncodingUTF8);
+		
+		if ( ! ivptr ) {
+			return NULL;
+		}
 		
 		char keyPtr[kCCKeySizeAES256+1];	// 'key' should be 32 bytes for AES256, will be null-padded otherwise
-//		bzero(keyPtr, sizeof(keyPtr));		// fill with zeroes (for padding)
 		memset(keyPtr, 0, sizeof(keyPtr));
 		
-		// fetch key data
-		[key getCString:keyPtr maxLength:sizeof(keyPtr) encoding:NSUTF8StringEncoding];
-		
-		NSUInteger dataLength = data.length;
+		if ( ! CFStringGetCString(key, keyPtr, kCCKeySizeAES256+1, kCFStringEncodingUTF8) ) {
+			return NULL;
+		}
 		
 		//See the doc: For block ciphers, the output size will always be less than or
 		//equal to the input size plus the size of one block.
 		//That's why we need to add the size of one block here
 		size_t bufferSize = dataLength + kCCBlockSizeAES128;
 		void *buffer = malloc(bufferSize);
-		const void *cipher = data.bytes;
+		const void *cipher = CFDataGetBytePtr(data);
 		
 		size_t numBytesDecrypted = 0;
 		CCCryptorStatus cryptStatus = CCCrypt(
@@ -123,7 +132,7 @@ NSData* ACDecryptAES256(NSData *data, NSString *key, NSString *initVector) {
 											  kCCOptionPKCS7Padding,
 											  keyPtr,
 											  kCCKeySizeAES256,
-											  ptr /* initialization vector (optional) */,
+											  ivptr /* initialization vector (optional) */,
 											  cipher,
 											  dataLength, /* input */
 											  buffer,
@@ -131,7 +140,7 @@ NSData* ACDecryptAES256(NSData *data, NSString *key, NSString *initVector) {
 											  &numBytesDecrypted );
 		
 		if (cryptStatus == kCCSuccess) {
-			final = [[NSData alloc] initWithBytes:buffer length:numBytesDecrypted];
+			final = CFDataCreate(kCFAllocatorDefault, buffer, numBytesDecrypted);
 		}
 		
 		free(buffer); //free the buffer;

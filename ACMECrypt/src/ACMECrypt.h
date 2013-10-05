@@ -38,15 +38,15 @@ SecKeyRef ACGetPublicKeyX509(CFStringRef certPath);
  *			- key is emtpy ot 'nil.'
  *			- initVector is empty or 'nil.'
  *	@param
- *		data (NSData*), data to encrypt.
+ *		data (CFDataRef), data to encrypt.
  *	@param
- *		key (NSString*), encryption key.
+ *		key (CFStringRef), encryption key.
  *	@param
- *		initVector (NSString*)
+ *		initVector (CFStringRef)
  *	@return
- *		NSData*, 'nil' if an error occurs.
+ *		CFDataRef, 'NULL' if an error occurs.
  */
-CFDataRef ACEncryptAES256(CFDataRef data, CFStringRef key, CFStringRef initVector );
+CFDataRef ACEncryptAES256(CFDataRef data, CFStringRef key, CFStringRef initVector);
 
 /*!
  *	@function
@@ -56,15 +56,15 @@ CFDataRef ACEncryptAES256(CFDataRef data, CFStringRef key, CFStringRef initVecto
  *	@discussion
  *		If 'data,' 'key,' or 'initVector,' have a length of less than 1, this will be considered an error.
  *	@param
- *		data (NSData*), data to decrypt.
+ *		data (CFDataRef), data to decrypt.
  *	@param
- *		key (NSString*), decryption key.
+ *		key (CFStringRef), decryption key.
  *	@param
- *		initVector (NSString*), intialization vector.
+ *		initVector (CFStringRef), intialization vector.
  *	@return
- *		NSData*, decrypted data, 'nil' if an error occurs.
+ *		CFDataRef, decrypted data, 'NULL' if an error occurs.
  */
-NSData* ACDecryptAES256(NSData *data, NSString *key, NSString *initVector );
+CFDataRef ACDecryptAES256(CFDataRef data, CFStringRef key, CFStringRef initVector);
 
 #pragma mark Assymetric Encryption / Decryption
 
