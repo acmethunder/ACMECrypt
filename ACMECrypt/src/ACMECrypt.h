@@ -48,6 +48,22 @@ SecKeyRef ACGetPublicKeyX509(NSString *certPath);
  */
 NSData* ACEncryptAES256(NSData *data, NSString *key, NSString* initVector );
 
+/*!
+ *	@function
+ *		ACDecryptAES256
+ *	@abstract
+ *		Decrypts the provided binary object.
+ *	@discussion
+ *		If 'data,' 'key,' or 'initVector,' have a length of less than 1, this will be considered an error.
+ *	@param
+ *		data (NSData*), data to decrypt.
+ *	@param
+ *		key (NSString*), decryption key.
+ *	@param
+ *		initVector (NSString*), intialization vector.
+ *	@return
+ *		NSData*, decrypted data, 'nil' if an error occurs.
+ */
 NSData* ACDecryptAES256(NSData *data, NSString *key, NSString *initVector );
 
 #pragma mark Assymetric Encryption / Decryption
