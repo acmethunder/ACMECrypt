@@ -28,81 +28,82 @@ SecKeyRef ACGetPublicKeyX509(NSString *certPath);
 #pragma mark Symmetric Encryption / Decryption
 
 /*!
- * @function
- * ECEncryptAES256
- * @abstract
- * Encrypts the provided NSData object with key and initialization vector.
- * @discussion
- * Any of the following cases will be considered an error (in addition to the ecryption itself failing):
- * - data.length < 1
- * - key is emtpy ot 'nil.'
- * - initVector is empty or 'nil.'
- * @param
- * data (NSData*), data to encrypt.
- * @param
- * key (NSString*), encryption key.
- * @param
- * initVector (NSString*)
- * @return
- * NSData*, 'nil' if an error occurs.
+ *	@function
+ *		ECEncryptAES256
+ *	@abstract
+ *		Encrypts the provided NSData object with key and initialization vector.
+ *	@discussion
+ *		Any of the following cases will be considered an error (in addition to the ecryption itself failing):
+ *			- data.length < 1
+ *			- key is emtpy ot 'nil.'
+ *			- initVector is empty or 'nil.'
+ *	@param
+ *		data (NSData*), data to encrypt.
+ *	@param
+ *		key (NSString*), encryption key.
+ *	@param
+ *		initVector (NSString*)
+ *	@return
+ *		NSData*, 'nil' if an error occurs.
  */
 NSData* ACEncryptAES256(NSData *data, NSString *key, NSString* initVector );
+
+NSData* ACDecryptAES256(NSData *data, NSString *key, NSString *initVector );
 
 #pragma mark Assymetric Encryption / Decryption
 
 /*!
- * @function
- *	ECEncrypt
- * @abstract
- *	Encrypts the provided data object with the provided key.
- * @discussion
- *	The encryption algorithm is supplied by 'publickey.' Uses PKCS1 padding.
+ *	@function
+ *		ECEncrypt
+ *	@abstract
+ *		Encrypts the provided data object with the provided key.
+ *	@discussion
+ *		The encryption algorithm is supplied by 'publickey.' Uses PKCS1 padding.
  *
- *	If an error occurs, this function will return 'nil.' If 'data' is 'nil' or has a length of less 1,
- *	or 'publickey' is NULL, these cases will be treated as errors.
- * @param
- *	data (NSData*), data to encrypt.
- * @param
- *	publickey (SecKetRef), encryption key.
- * @return
- *	NSData*, 'nil' if an error occurs.
+ *		If an error occurs, this function will return 'nil.' If 'data' is 'nil' or has a length of less
+ *		1, or 'publickey' is NULL, these cases will be treated as errors.
+ *	@param
+ *		data (NSData*), data to encrypt.
+ *	@param
+ *		publickey (SecKetRef), encryption key.
+ *	@return
+ *		NSData*, 'nil' if an error occurs.
  */
 NSData* ACEncrypt(NSData *data, SecKeyRef publicKey);
 
 /*!
- * @function
- *	ECDecrypt
- * @abstract
- *	Decrypts the provided NSData object using 'key' as the decrytion key.
- * @discussion
- *	At the moment, if will only decrypt data that meets the following condition:
- *		- data.length < SecKeyGetBlockSize(key) - 11
+ *	@function
+ *		ECDecrypt
+ *	@abstract
+ *		Decrypts the provided NSData object using 'key' as the decrytion key.
+ *	@discussion
+ *		Assumes PKCS! padding.
  *
- *	If 'data' is 'nil,' or 'data.length < 1,' or 'key' is null, these cases will be treated as errors.
- * @param
- *	data (NSData*), data to decrypt.
- * @param
- *	key (SecKeyRef), decryption key.
- * @return
- *	NSData*, decrypted data object, or 'nil' if an error occurs.
+ *		If 'data' is 'nil,' or 'data.length < 1,' or 'key' is null, these cases will be treated as errors.
+ *	@param
+ *		data (NSData*), data to decrypt.
+ *	@param
+ *		key (SecKeyRef), decryption key.
+ *	@return
+ *		NSData*, decrypted data object, or 'nil' if an error occurs.
  */
 NSData* ACDecryptWithKey(NSData* data, SecKeyRef key);
 
 #pragma mark Hashing
 
 /*!
- * @function
- * ECGetMD5
- * @abstract
- * Calculates the MD5 hash of the provided data object.
- * @discussion
- * Will only calculate the MD5 hash if the provided data object has a lenght of greater than zero.
- * @param
- * data (NSData*), data to hash.
- * @return
- * MD5 as lowercase hex values., 'nil' if an error occurs.
+ *	@function
+ *		ECGetMD5
+ *	@abstract
+ *		Calculates the MD5 hash of the provided data object.
+ *	@discussion
+ *		Will only calculate the MD5 hash if the provided data object has a lenght of greater than zero.
+ *	@param
+ *		data (CFDataRef), data to hash.
+ *	@return
+ *		CFStringRef, MD5 as lowercase hex values., 'NULL' if an error occurs.
  */
-NSString* ECGetMD5(NSData* data);
+CFStringRef ACGetMD5(CFDataRef data);
 
 #pragma mark -
 #pragma mark EncryptionController DECLARATION
@@ -113,7 +114,7 @@ NSString* ECGetMD5(NSData* data);
  * @abstract
  * @discussion
  */
-@interface ACMEAssymCrypt : NSObject
+@interface ACMECrypt : NSObject
 
 /*!
  * @method

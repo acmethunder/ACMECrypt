@@ -7,7 +7,7 @@
 //
 
 #import <CommonCrypto/CommonCrypto.h>
-#import "ACMEAssymCrypt.h"
+#import "ACMECrypt.h"
 
 #pragma mark -
 #pragma mark FREE STANDING C FUNCTIONS
@@ -43,44 +43,89 @@ SecKeyRef ACGetPublicKeyX509(NSString *certPath) {
 NSData* ACEncryptAES256(NSData *data, NSString *key, NSString* initVector ) {
     NSData *final = 0;
     
-//    if ( (data.length > 0) && (! [NSString isCompletelyEmpty:key]) && (! [NSString isCompletelyEmpty:initVector]) ) {
-//        const char *ivptr = [initVector cStringUsingEncoding:NSUTF8StringEncoding];
-//        char keyptr[kCCKeySizeAES256 + 1];
-//        // bzero(keyptr, sizeof(keyptr));
-//        memset(keyptr, 0, sizeof(keyptr));
-//        
-//        [key getCString:keyptr maxLength:sizeof(keyptr) encoding:NSUTF8StringEncoding];
-//        
-//        NSUInteger length = data.length;
-//        
-//        size_t buffersize = length + kCCBlockSizeAES128;
-//        size_t bytesencrypted = 0;
-//        
-//        void *cipherbuffer = malloc(buffersize);
-//        const char *plainbuffer = [data bytes];
-//        
-//        CCCryptorStatus status = CCCrypt(
-//                                         kCCEncrypt,
-//                                         kCCAlgorithmAES128,
-//                                         kCCOptionPKCS7Padding,
-//                                         keyptr,
-//                                         kCCKeySizeAES256,
-//                                         ivptr,
-//                                         plainbuffer,
-//                                         length,
-//                                         cipherbuffer,
-//                                         buffersize,
-//                                         &bytesencrypted );
-//        
-//        if ( status == kCCSuccess ) {
-//            final = [[NSData alloc] initWithBytes:cipherbuffer length:bytesencrypted];
-//        }
-//        
-//        free(cipherbuffer);
-//    }
+    if ( (data.length > 0) && (key.length > 0) && (initVector.length > 0) ) {
+        const char *ivptr = [initVector cStringUsingEncoding:NSUTF8StringEncoding];
+        char keyptr[kCCKeySizeAES256 + 1];
+        memset(keyptr, 0, sizeof(keyptr));
+        
+        [key getCString:keyptr maxLength:sizeof(keyptr) encoding:NSUTF8StringEncoding];
+        
+        NSUInteger length = data.length;
+        
+        size_t buffersize = length + kCCBlockSizeAES128;
+        size_t bytesencrypted = 0;
+        
+        void *cipherbuffer = malloc(buffersize);
+        const char *plainbuffer = [data bytes];
+        
+        CCCryptorStatus status = CCCrypt(
+                                         kCCEncrypt,
+                                         kCCAlgorithmAES128,
+                                         kCCOptionPKCS7Padding,
+                                         keyptr,
+                                         kCCKeySizeAES256,
+                                         ivptr,
+                                         plainbuffer,
+                                         length,
+                                         cipherbuffer,
+                                         buffersize,
+                                         &bytesencrypted );
+        
+        if ( status == kCCSuccess ) {
+            final = [[NSData alloc] initWithBytes:cipherbuffer length:bytesencrypted];
+        }
+        
+        free(cipherbuffer);
+    }
     
     
     return final;
+}
+
+NSData* ACDecryptAES256(NSData *data, NSString *key, NSString *initVector) {
+	NSData *final = 0;
+	
+	if ( (data.length > 0) && (key.length > 0) && (initVector.length > 0) ) {
+		const char *ptr = [initVector cStringUsingEncoding:NSUTF8StringEncoding];
+		
+		char keyPtr[kCCKeySizeAES256+1];	// 'key' should be 32 bytes for AES256, will be null-padded otherwise
+//		bzero(keyPtr, sizeof(keyPtr));		// fill with zeroes (for padding)
+		memset(keyPtr, 0, sizeof(keyPtr));
+		
+		// fetch key data
+		[key getCString:keyPtr maxLength:sizeof(keyPtr) encoding:NSUTF8StringEncoding];
+		
+		NSUInteger dataLength = data.length;
+		
+		//See the doc: For block ciphers, the output size will always be less than or
+		//equal to the input size plus the size of one block.
+		//That's why we need to add the size of one block here
+		size_t bufferSize = dataLength + kCCBlockSizeAES128;
+		void *buffer = malloc(bufferSize);
+		const void *cipher = data.bytes;
+		
+		size_t numBytesDecrypted = 0;
+		CCCryptorStatus cryptStatus = CCCrypt(
+											  kCCDecrypt,
+											  kCCAlgorithmAES128,
+											  kCCOptionPKCS7Padding,
+											  keyPtr,
+											  kCCKeySizeAES256,
+											  ptr /* initialization vector (optional) */,
+											  cipher,
+											  dataLength, /* input */
+											  buffer,
+											  bufferSize, /* output */
+											  &numBytesDecrypted );
+		
+		if (cryptStatus == kCCSuccess) {
+			final = [[NSData alloc] initWithBytes:buffer length:numBytesDecrypted];
+		}
+		
+		free(buffer); //free the buffer;
+	}
+	
+	return final;
 }
 
 #pragma mark Assymetric Encryption / Decryption
@@ -134,22 +179,43 @@ NSData* ACEncrypt(NSData *data, SecKeyRef publicKey) {
 NSData* ACDecryptWithKey(NSData* data, SecKeyRef key) {
     NSData *final = 0;
     if ( (data.length > 0) && key ) {
-        size_t max = SecKeyGetBlockSize(key);
-        uint8_t *cipherText = malloc(data.length);
-        [data getBytes:cipherText length:data.length];
+		size_t max = SecKeyGetBlockSize(key);
+        size_t cipherBufferSize = max;
         
-        uint8_t *plainBuffer = malloc(max);
-        size_t plainSize = max;
+        const uint8_t *fullthing = data.bytes;
         
+        const size_t inputBlocSize = cipherBufferSize;
+        uint8_t *cipherBuffer = malloc(cipherBufferSize);
         
-        OSStatus status = SecKeyDecrypt(key, kSecPaddingPKCS1, cipherText, data.length, plainBuffer, &plainSize);
+        NSMutableData *temp = [[NSMutableData alloc] init];
         
-        if ( status == errSecSuccess ) {
-            final = [[NSData alloc] initWithBytes:plainBuffer length:plainSize];
+        NSUInteger maxlength = data.length;
+        
+        for ( size_t block = 0; block * inputBlocSize < maxlength; ++block ) {
+            size_t blockoffset = block * inputBlocSize;
+            const uint8_t *chunk = fullthing + blockoffset;
+            const size_t remainingsize = maxlength - blockoffset;
+            const size_t subsize = (remainingsize < inputBlocSize ? remainingsize : inputBlocSize);
+            
+            size_t actualSize = cipherBufferSize;
+            
+			OSStatus status = SecKeyDecrypt(key, kSecPaddingPKCS1, chunk, subsize, cipherBuffer, &actualSize);
+            
+            if ( status == errSecSuccess ) {
+                [temp appendBytes:cipherBuffer length:actualSize];
+            }
+            else {
+                NSLog( @"Unable to encrypt data. Status: %ld", status);
+                temp = 0;
+                break;
+            }
         }
         
-        free(cipherText);
-        free(plainBuffer);
+        if ( temp.length > 0 ) {
+            final = [[NSData alloc] initWithData:temp];
+        }
+        
+        free(cipherBuffer);
     }
     
     return final;
@@ -157,23 +223,24 @@ NSData* ACDecryptWithKey(NSData* data, SecKeyRef key) {
 
 #pragma mark Hashing
 
-NSString* ECGetMD5(NSData* data) {
-    NSString *final = 0;
-    
-    if ( data.length > 0 ) {
-        const char *plainText = data.bytes;
+CFStringRef ACGetMD5(CFDataRef data) {
+	CFStringRef final = NULL;
+    CFIndex length = ( data ? CFDataGetLength(data) : 0 );
+    if ( length > 0 ) {
+        const char *plainText = (char*)CFDataGetBytePtr(data);
         unsigned char digest[CC_MD5_DIGEST_LENGTH];
         
-        CC_MD5( plainText, data.length, digest );
+        CC_MD5( plainText, length, digest );
         
-        NSMutableString *temp = [[NSMutableString alloc] initWithCapacity:CC_MD5_DIGEST_LENGTH * 2];
-        
+        CFMutableStringRef temp = CFStringCreateMutable(kCFAllocatorDefault, (CFIndex)(CC_MD5_DIGEST_LENGTH * 2));
+		CFStringRef format = CFStringCreateWithCString(kCFAllocatorDefault, "%02x", kCFStringEncodingUTF8);
+		
         for ( NSInteger i = 0; i < CC_MD5_DIGEST_LENGTH; ++i ) {
-            [temp appendFormat:@"%02x", digest[i]];
+			CFStringAppendFormat(temp, NULL, format, digest[i]);
         }
-        
-        final = [[NSString alloc] initWithString:temp];
-        assert(final.length == CC_MD5_DIGEST_LENGTH * 2);
+		
+		final = CFStringCreateCopy(kCFAllocatorDefault, temp);
+		assert(CFStringGetLength(temp) == (CC_MD5_DIGEST_LENGTH * 2));
     }
     
     return final;
@@ -183,30 +250,30 @@ NSString* ECGetMD5(NSData* data) {
 #pragma mark ACMEAssymCrypt IMPLEMENTATION
 
 
-@implementation ACMEAssymCrypt
+@implementation ACMECrypt
 
-+(SecKeyRef)GetDefaultPublicRSAKey:(NSString*)publiKeyId {
-    SecKeyRef publicKey = 0;
-    
-    NSData *publicTag = [publiKeyId dataUsingEncoding:NSUTF8StringEncoding];
-    
-    if ( publicTag ) {
-        NSMutableDictionary *query = [[NSMutableDictionary alloc] init];
-        [query setObject:(__bridge id)kSecClassKey forKey:(__bridge id)kSecClass];
-        [query setObject:publicTag forKey:(__bridge id)kSecAttrApplicationTag];
-        [query setObject:(__bridge id)kSecAttrKeyTypeRSA forKey:(__bridge id)kSecAttrKeyType];
-        [query setObject:@(TRUE) forKey:(__bridge id)kSecReturnRef];
-        
-        OSStatus status = SecItemCopyMatching( (__bridge CFDictionaryRef)query, (CFTypeRef*)&publicKey );
-        
-        if ( status != noErr ) {
-            NSLog( @"Error retrieving public key.Error Code: %ld", status );
-            publicKey = 0;
-        }
-    }
-    
-    return publicKey;
-}
+//+(SecKeyRef)GetDefaultPublicRSAKey:(NSString*)publiKeyId {
+//    SecKeyRef publicKey = 0;
+//    
+//    NSData *publicTag = [publiKeyId dataUsingEncoding:NSUTF8StringEncoding];
+//    
+//    if ( publicTag ) {
+//        NSMutableDictionary *query = [[NSMutableDictionary alloc] init];
+//        [query setObject:(__bridge id)kSecClassKey forKey:(__bridge id)kSecClass];
+//        [query setObject:publicTag forKey:(__bridge id)kSecAttrApplicationTag];
+//        [query setObject:(__bridge id)kSecAttrKeyTypeRSA forKey:(__bridge id)kSecAttrKeyType];
+//        [query setObject:@(TRUE) forKey:(__bridge id)kSecReturnRef];
+//        
+//        OSStatus status = SecItemCopyMatching( (__bridge CFDictionaryRef)query, (CFTypeRef*)&publicKey );
+//        
+//        if ( status != noErr ) {
+//            NSLog( @"Error retrieving public key.Error Code: %ld", status );
+//            publicKey = 0;
+//        }
+//    }
+//    
+//    return publicKey;
+//}
 
 +(NSString *)randomStringGenerator:(int)length {
     
