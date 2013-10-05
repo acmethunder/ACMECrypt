@@ -23,7 +23,7 @@
  *	@return
  *		SecKeyRef, 'NULL' if an error occurs.
  */
-SecKeyRef ACGetPublicKeyX509(NSString *certPath);
+SecKeyRef ACGetPublicKeyX509(CFStringRef certPath);
 
 #pragma mark Symmetric Encryption / Decryption
 
@@ -46,7 +46,7 @@ SecKeyRef ACGetPublicKeyX509(NSString *certPath);
  *	@return
  *		NSData*, 'nil' if an error occurs.
  */
-NSData* ACEncryptAES256(NSData *data, NSString *key, NSString* initVector );
+CFDataRef ACEncryptAES256(CFDataRef data, CFStringRef key, CFStringRef initVector );
 
 /*!
  *	@function

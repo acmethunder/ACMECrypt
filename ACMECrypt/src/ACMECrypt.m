@@ -13,10 +13,12 @@
 #pragma mark FREE STANDING C FUNCTIONS
 #pragma mark Key Management
 
-SecKeyRef ACGetPublicKeyX509(NSString *certPath) {
+SecKeyRef ACGetPublicKeyX509(CFStringRef certPath) {
     SecKeyRef keyRef = NULL;
+	
+	CFIndex length = ( certPath ? CFStringGetLength(certPath) : (CFIndex)0 );
     
-    NSData *certData = [[NSData alloc] initWithContentsOfFile:certPath];
+    NSData *certData = [[NSData alloc] initWithContentsOfFile:(__bridge NSString *)(certPath)];
     if ( certData.length > 0 ) {
         SecCertificateRef certRef = SecCertificateCreateWithData(kCFAllocatorDefault, (__bridge CFDataRef)certData);
         SecPolicyRef policy = SecPolicyCreateBasicX509();
@@ -40,23 +42,32 @@ SecKeyRef ACGetPublicKeyX509(NSString *certPath) {
 
 #pragma mark Symmetric Encryption / Decryption
 
-NSData* ACEncryptAES256(NSData *data, NSString *key, NSString* initVector ) {
-    NSData *final = 0;
+CFDataRef ACEncryptAES256(CFDataRef data, CFStringRef key, CFStringRef initVector ) {
+    CFDataRef final = NULL;
+	
+	CFIndex dataLength = ( data ? CFDataGetLength(data) : (CFIndex)0 );
+	CFIndex keyLength  = ( key ? CFStringGetLength(key) : (CFIndex)0 );
+	CFIndex ivLength   = ( initVector ? CFStringGetLength(initVector) : (CFIndex)0 );
     
-    if ( (data.length > 0) && (key.length > 0) && (initVector.length > 0) ) {
-        const char *ivptr = [initVector cStringUsingEncoding:NSUTF8StringEncoding];
+    if ( (dataLength > 0) && (keyLength > 0) && (keyLength > 0) ) {
+		char *ivptr = malloc(ivLength);
+		memset(ivptr, 0, ivLength);
+		if ( ! CFStringGetCString(initVector, ivptr, sizeof(ivptr) * ivLength, kCFStringEncodingASCII) ) {
+			return NULL;
+		}
+		
         char keyptr[kCCKeySizeAES256 + 1];
         memset(keyptr, 0, sizeof(keyptr));
         
-        [key getCString:keyptr maxLength:sizeof(keyptr) encoding:NSUTF8StringEncoding];
+		if ( ! CFStringGetCString(key, keyptr, kCCKeySizeAES256 + 1, kCFStringEncodingUTF8) ) {
+			return NULL;
+		}
         
-        NSUInteger length = data.length;
-        
-        size_t buffersize = length + kCCBlockSizeAES128;
+        size_t buffersize = dataLength + kCCBlockSizeAES128;
         size_t bytesencrypted = 0;
         
         void *cipherbuffer = malloc(buffersize);
-        const char *plainbuffer = [data bytes];
+		const char *plainBuffer = (char*)CFDataGetBytePtr(data);
         
         CCCryptorStatus status = CCCrypt(
                                          kCCEncrypt,
@@ -65,17 +76,18 @@ NSData* ACEncryptAES256(NSData *data, NSString *key, NSString* initVector ) {
                                          keyptr,
                                          kCCKeySizeAES256,
                                          ivptr,
-                                         plainbuffer,
-                                         length,
+                                         plainBuffer,
+                                         dataLength,
                                          cipherbuffer,
                                          buffersize,
                                          &bytesencrypted );
         
         if ( status == kCCSuccess ) {
-            final = [[NSData alloc] initWithBytes:cipherbuffer length:bytesencrypted];
+			final = CFDataCreate(kCFAllocatorDefault, cipherbuffer, bytesencrypted);
         }
         
         free(cipherbuffer);
+		free(ivptr);
     }
     
     

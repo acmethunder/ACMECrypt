@@ -31,7 +31,7 @@
 	
 	NSString *keypath = [[NSBundle bundleForClass:self.class] pathForResource:@"rsa_public_key" ofType:@"der"];
 	XCTAssertTrue( keypath.length > 0, @"" );
-	SecKeyRef publickey = ACGetPublicKeyX509(keypath);
+	SecKeyRef publickey = ACGetPublicKeyX509((__bridge CFStringRef)(keypath));
 	XCTAssertFalse( publickey == NULL, @"" );
 	self.publickey = publickey;
 	
@@ -129,8 +129,12 @@
 	NSString *helloString = @"hello, world";
 	NSData *helloData = [helloString dataUsingEncoding:NSUTF8StringEncoding];
 	
-	NSData *encrypted = ACEncryptAES256(helloData, self.aes256Key, self.iv);
+	NSData *encrypted = (__bridge NSData *)(ACEncryptAES256(
+															(__bridge CFDataRef)(helloData),
+															(__bridge CFStringRef)(self.aes256Key),
+															(__bridge CFStringRef)(self.iv)) );
 	XCTAssertNotNil( encrypted, @"" );
+	XCTAssertTrue( encrypted.length > 0, @"" );
 	XCTAssertFalse( [encrypted isEqualToData:helloData], @"" );
 	
 	NSData *decrypted = ACDecryptAES256(encrypted, self.aes256Key, self.iv);
@@ -162,7 +166,7 @@
 	XCTAssertNil( jsonError, @"JSON Error: %@", jsonError.debugDescription );
 	XCTAssertTrue( jsonData.length > 0, @"" );
 	
-	NSData *encryptedJSON = ACEncryptAES256(jsonData, self.aes256Key, self.iv );
+	NSData *encryptedJSON = (__bridge NSData *)(ACEncryptAES256((__bridge CFDataRef)(jsonData), (__bridge CFStringRef)(self.aes256Key), (__bridge CFStringRef)(self.iv) ));
 	XCTAssertTrue( encryptedJSON.length > 0, @"" );
 	XCTAssertFalse( [encryptedJSON isEqualToData:jsonData], @"" );
 	
