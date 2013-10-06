@@ -7,9 +7,51 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CommonCrypto/CommonHMAC.h>
+
+#pragma mark -
+#pragma mark DATA TYPES
+
+typedef enum uint32_t {
+	kACHMACAlgSHA1 = kCCHmacAlgSHA1,
+	kACHMACAlgSHA224 = kCCHmacAlgSHA224,
+	kACHMACAlgSHA256 = kCCHmacAlgSHA256,
+	kACHMACAlgSHA384 = kCCHmacAlgSHA384,
+	kACHMACAlgSHA512 = kCCHmacAlgSHA512,
+	kACHMACAlgMD5 = kCCHmacAlgMD5
+}ACHAMCAlgorithm;
 
 #pragma mark -
 #pragma mark FREE STANDING C FUNCTIONS
+#pragma mark TO String
+
+/*!
+ *	@function
+ *		ACDataToHEX
+ *	@abstract
+ *		Returns a string containing the uppercase hexits of the provided CFDataRef item.
+ *	@param
+ *		data (CFDataRef)
+ *	@return
+ *		CFStringRef, 'NULL' if an error occurs.
+ */
+CFStringRef ACDataToHEX(CFDataRef data);
+
+#pragma mark Randon String Generator
+
+/*!
+ *	@function
+ *		ACRandomString
+ *	@abstract
+ *		Generates a random string of the specified length.
+ *	@discussion
+ *	@param
+ *		length (NSUInteger), desired length of th random string.
+ *	@return
+ *		CFStringRef, 'NULL' if an error occurs.
+ */
+CFStringRef ACRandomString(NSUInteger length);
+
 #pragma mark Key Management
 
 /*!
@@ -70,22 +112,22 @@ CFDataRef ACDecryptAES256(CFDataRef data, CFStringRef key, CFStringRef initVecto
 
 /*!
  *	@function
- *		ECEncrypt
+ *		ACEncrypt
  *	@abstract
  *		Encrypts the provided data object with the provided key.
  *	@discussion
  *		The encryption algorithm is supplied by 'publickey.' Uses PKCS1 padding.
  *
- *		If an error occurs, this function will return 'nil.' If 'data' is 'nil' or has a length of less
+ *		If an error occurs, this function will return 'NULL.' If 'data' is 'nil' or has a length of less
  *		1, or 'publickey' is NULL, these cases will be treated as errors.
  *	@param
- *		data (NSData*), data to encrypt.
+ *		data (CFDataRef), data to encrypt.
  *	@param
  *		publickey (SecKetRef), encryption key.
  *	@return
- *		NSData*, 'nil' if an error occurs.
+ *		CFDataRef, 'NULL' if an error occurs.
  */
-NSData* ACEncrypt(NSData *data, SecKeyRef publicKey);
+CFDataRef ACEncrypt(CFDataRef data, SecKeyRef publicKey);
 
 /*!
  *	@function
@@ -103,7 +145,7 @@ NSData* ACEncrypt(NSData *data, SecKeyRef publicKey);
  *	@return
  *		NSData*, decrypted data object, or 'nil' if an error occurs.
  */
-NSData* ACDecryptWithKey(NSData* data, SecKeyRef key);
+CFDataRef ACDecryptWithKey(CFDataRef data, SecKeyRef key);
 
 #pragma mark Hashing
 
@@ -117,9 +159,13 @@ NSData* ACDecryptWithKey(NSData* data, SecKeyRef key);
  *	@param
  *		data (CFDataRef), data to hash.
  *	@return
- *		CFStringRef, MD5 as lowercase hex values., 'NULL' if an error occurs.
+ *		CFDataRef, 'NULL' if an error occurs.
  */
-CFStringRef ACGetMD5(CFDataRef data);
+CFDataRef ACGetMD5(CFDataRef data);
+
+#pragma mark Signing
+
+CFDataRef ACHmac(CFDataRef data, CFStringRef key, ACHAMCAlgorithm alg);
 
 #pragma mark -
 #pragma mark EncryptionController DECLARATION
@@ -131,54 +177,6 @@ CFStringRef ACGetMD5(CFDataRef data);
  * @discussion
  */
 @interface ACMECrypt : NSObject
-
-/*!
- * @method
- * randomStringGenerator:
- * @abstract
- * Generates a andom string of the desirted length.
- * @param
- * int length - Length of the desired random string.
- * @return
- * NSString - Randomly generated string. Auto released.
- */
-+(NSString *)randomStringGenerator:(int)length;
-
-/*!
- * @method
- * encryptSTring:withKey:andVector
- * @abstract
- * Returns and NSData object representing the plaint tex string passed in.
- * @discussion
- * Encrypts the plain text string with AES256 encryption. Returns the encrypted string as an NSData
- * object.
- * @param
- * NSString *plainText - string to encrypt.
- * @param
- * NSString *key - encryption key.
- * @param
- * NSstring *initVector -
- * @return
- * NSData - encrypted data object representing "plainText." Autoreleased.
- */
-+(NSData *)encryptString:(NSString *)plaintext withKey:(NSString *)key andVector:(NSString *)initVector;
-
-/*!
- * @method
- * decryptData:withKey:andVector;
- * @abstract
- * Decrypts the provided NSData object, and returns a the plain text string.
- * @discussion
- * @param
- * NSData *cipherText - Data object to be decrypted.
- * @param
- * NSString *key - decryption key.
- * @param
- * NSString *initViector -
- * @return
- * NSString - decrypted plain text string. Autoreleased.
- */
-+(NSString *)decryptData:(NSData *)ciphertext withKey:(NSString *)key andVector:(NSString *)initVector;
 
 
 /*!

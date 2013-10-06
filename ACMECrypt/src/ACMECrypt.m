@@ -9,8 +9,59 @@
 #import <CommonCrypto/CommonCrypto.h>
 #import "ACMECrypt.h"
 
+const char *kACMECryptChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+const char *kACryptHEXFormat = "%02X";
+
+const int kACMECryprNumChars = 62;
+
 #pragma mark -
 #pragma mark FREE STANDING C FUNCTIONS
+#pragma mark TO String
+
+CFStringRef ACDataToHEX(CFDataRef data) {
+	CFStringRef final = NULL;
+	
+	CFIndex dataLength = ( data ? CFDataGetLength(data) : 0 );
+	
+	if ( dataLength >  0 ) {
+		const UInt8 *dataptr = CFDataGetBytePtr(data);
+		
+		CFMutableStringRef temp = CFStringCreateMutable(kCFAllocatorDefault, dataLength * 2);
+		CFStringRef format = CFStringCreateWithCString(kCFAllocatorDefault, kACryptHEXFormat, kCFStringEncodingUTF8);
+		
+		for ( int i = 0; i < dataLength; ++i ) {
+			CFStringAppendFormat(temp, NULL, format, dataptr[i]);
+		}
+		
+		if ( CFStringGetLength(temp) > 0 ) {
+			final = CFStringCreateCopy(kCFAllocatorDefault, temp);
+		}
+	}
+	
+	
+	return final;
+}
+
+#pragma mark Randon String Generator
+
+CFStringRef ACRandomString(NSUInteger length) {
+	CFStringRef final = NULL;
+	
+	CFMutableStringRef temp = CFStringCreateMutable(kCFAllocatorDefault, (CFIndex)length);
+	
+	for ( NSUInteger i = 0; i < length; ++i ) {
+		NSUInteger rand = arc4random() % kACMECryprNumChars;
+		UniChar c = kACMECryptChars[rand];
+		CFStringAppendCharacters(temp, &c, 1);
+	}
+	
+	if ( CFStringGetLength(temp) > 0 ) {
+		final = CFStringCreateCopy(kCFAllocatorDefault, temp);
+	}
+	
+	return final;
+}
+
 #pragma mark Key Management
 
 SecKeyRef ACGetPublicKeyX509(CFStringRef certPath) {
@@ -151,21 +202,19 @@ CFDataRef ACDecryptAES256(CFDataRef data, CFStringRef key, CFStringRef initVecto
 
 #pragma mark Assymetric Encryption / Decryption
 
-NSData* ACEncrypt(NSData *data, SecKeyRef publicKey) {
-    NSData *final = 0;
+CFDataRef ACEncrypt(CFDataRef data, SecKeyRef publicKey) {
+    CFDataRef final = 0;
+	
+	CFIndex dataLength = ( data ? CFDataGetLength(data) : (CFIndex)0 );
     
-    if ( (data.length > 0) || (publicKey) ) {
+    if ( (dataLength > 0) || (publicKey) ) {
         size_t max = SecKeyGetBlockSize(publicKey);
         size_t cipherBufferSize = max;
-        
-        const uint8_t *fullthing = data.bytes;
-        
+		const uint8_t *fullthing = CFDataGetBytePtr(data);
         const size_t inputBlocSize = cipherBufferSize - 12;
         uint8_t *cipherBuffer = malloc(cipherBufferSize);
-        
-        NSMutableData *temp = [[NSMutableData alloc] init];
-        
-        NSUInteger maxlength = data.length;
+		CFMutableDataRef temp = CFDataCreateMutable(kCFAllocatorDefault, cipherBufferSize * dataLength);
+		NSUInteger maxlength = dataLength;
         
         for ( size_t block = 0; block * inputBlocSize < maxlength; ++block ) {
             size_t blockoffset = block * inputBlocSize;
@@ -178,7 +227,7 @@ NSData* ACEncrypt(NSData *data, SecKeyRef publicKey) {
             OSStatus status = SecKeyEncrypt(publicKey, kSecPaddingPKCS1, chunk, subsize, cipherBuffer, &actualSize);
             
             if ( status == errSecSuccess ) {
-                [temp appendBytes:cipherBuffer length:actualSize];
+				CFDataAppendBytes(temp, cipherBuffer, actualSize);
             }
             else {
                 NSLog( @"Unable to encrypt data. Status: %ld", status);
@@ -187,8 +236,8 @@ NSData* ACEncrypt(NSData *data, SecKeyRef publicKey) {
             }
         }
         
-        if ( temp.length > 0 ) {
-            final = [[NSData alloc] initWithData:temp];
+        if ( temp && (CFDataGetLength(temp) > 0) ) {
+			final = CFDataCreateCopy(kCFAllocatorDefault, temp);
         }
         
         free(cipherBuffer);
@@ -197,20 +246,19 @@ NSData* ACEncrypt(NSData *data, SecKeyRef publicKey) {
     return final;
 }
 
-NSData* ACDecryptWithKey(NSData* data, SecKeyRef key) {
-    NSData *final = 0;
-    if ( (data.length > 0) && key ) {
+CFDataRef ACDecryptWithKey(CFDataRef data, SecKeyRef key) {
+    CFDataRef final = 0;
+	
+	CFIndex dataLength = ( data ? CFDataGetLength(data) : 0 );
+	
+    if ( (dataLength > 0) && key ) {
 		size_t max = SecKeyGetBlockSize(key);
         size_t cipherBufferSize = max;
-        
-        const uint8_t *fullthing = data.bytes;
-        
+        const uint8_t *fullthing = CFDataGetBytePtr(data);
         const size_t inputBlocSize = cipherBufferSize;
         uint8_t *cipherBuffer = malloc(cipherBufferSize);
-        
-        NSMutableData *temp = [[NSMutableData alloc] init];
-        
-        NSUInteger maxlength = data.length;
+        NSUInteger maxlength = dataLength;
+		CFMutableDataRef temp = CFDataCreateMutable(kCFAllocatorDefault, dataLength);
         
         for ( size_t block = 0; block * inputBlocSize < maxlength; ++block ) {
             size_t blockoffset = block * inputBlocSize;
@@ -220,10 +268,16 @@ NSData* ACDecryptWithKey(NSData* data, SecKeyRef key) {
             
             size_t actualSize = cipherBufferSize;
             
-			OSStatus status = SecKeyDecrypt(key, kSecPaddingPKCS1, chunk, subsize, cipherBuffer, &actualSize);
+			OSStatus status = SecKeyDecrypt(
+											key,
+											kSecPaddingPKCS1,
+											chunk,
+											subsize,
+											cipherBuffer,
+											&actualSize );
             
             if ( status == errSecSuccess ) {
-                [temp appendBytes:cipherBuffer length:actualSize];
+				CFDataAppendBytes(temp, cipherBuffer, actualSize);
             }
             else {
                 NSLog( @"Unable to encrypt data. Status: %ld", status);
@@ -232,8 +286,8 @@ NSData* ACDecryptWithKey(NSData* data, SecKeyRef key) {
             }
         }
         
-        if ( temp.length > 0 ) {
-            final = [[NSData alloc] initWithData:temp];
+		if ( temp && (CFDataGetLength(temp) > 0) ) {
+            final = CFDataCreateCopy(kCFAllocatorDefault, temp);
         }
         
         free(cipherBuffer);
@@ -244,27 +298,63 @@ NSData* ACDecryptWithKey(NSData* data, SecKeyRef key) {
 
 #pragma mark Hashing
 
-CFStringRef ACGetMD5(CFDataRef data) {
-	CFStringRef final = NULL;
+CFDataRef ACGetMD5(CFDataRef data) {
+	CFDataRef final = NULL;
     CFIndex length = ( data ? CFDataGetLength(data) : 0 );
     if ( length > 0 ) {
         const char *plainText = (char*)CFDataGetBytePtr(data);
         unsigned char digest[CC_MD5_DIGEST_LENGTH];
         
-        CC_MD5( plainText, length, digest );
-        
-        CFMutableStringRef temp = CFStringCreateMutable(kCFAllocatorDefault, (CFIndex)(CC_MD5_DIGEST_LENGTH * 2));
-		CFStringRef format = CFStringCreateWithCString(kCFAllocatorDefault, "%02x", kCFStringEncodingUTF8);
+        CC_MD5(plainText, length, digest);
 		
-        for ( NSInteger i = 0; i < CC_MD5_DIGEST_LENGTH; ++i ) {
-			CFStringAppendFormat(temp, NULL, format, digest[i]);
-        }
-		
-		final = CFStringCreateCopy(kCFAllocatorDefault, temp);
-		assert(CFStringGetLength(temp) == (CC_MD5_DIGEST_LENGTH * 2));
+		final = CFDataCreate(kCFAllocatorDefault, digest, CC_MD5_DIGEST_LENGTH);
     }
     
     return final;
+}
+
+#pragma mark Signing
+
+CFDataRef ACHmac(CFDataRef data, CFStringRef key, ACHAMCAlgorithm alg) {
+	CFIndex dataLength = ( data ? CFDataGetLength(data) : 0 );
+	CFIndex keyLength  = ( key ? CFStringGetLength(key) : 0 );
+	
+	CFDataRef final = NULL;
+	
+	if ( (dataLength > 0) && (keyLength > 0) ) {
+		int digestLength;
+		switch (alg) {
+			case kACHMACAlgSHA1:
+				digestLength = CC_SHA1_DIGEST_LENGTH;
+				break;
+			case kACHMACAlgSHA224:
+				digestLength = CC_SHA224_DIGEST_LENGTH;
+				break;
+			case kACHMACAlgSHA256:
+				digestLength = CC_SHA256_DIGEST_LENGTH;
+				break;
+			case kACHMACAlgSHA384:
+				digestLength = CC_SHA384_DIGEST_LENGTH;
+				break;
+			case kACHMACAlgSHA512:
+				digestLength = CC_SHA512_DIGEST_LENGTH;
+				break;
+			default:
+				digestLength = CC_MD5_DIGEST_LENGTH;
+				break;
+		}
+		
+		const char *keyptr = CFStringGetCStringPtr(key, kCFStringEncodingUTF8);
+		const char *dataptr = (char*)CFDataGetBytePtr(data);
+		
+		unsigned char chmac[digestLength];
+		
+		CCHmac(alg, keyptr, keyLength, dataptr, dataLength, chmac);
+		
+		final = CFDataCreate(kCFAllocatorDefault, chmac, sizeof(chmac));
+	}
+	
+	return final;
 }
 
 #pragma mark -
@@ -272,51 +362,6 @@ CFStringRef ACGetMD5(CFDataRef data) {
 
 
 @implementation ACMECrypt
-
-//+(SecKeyRef)GetDefaultPublicRSAKey:(NSString*)publiKeyId {
-//    SecKeyRef publicKey = 0;
-//    
-//    NSData *publicTag = [publiKeyId dataUsingEncoding:NSUTF8StringEncoding];
-//    
-//    if ( publicTag ) {
-//        NSMutableDictionary *query = [[NSMutableDictionary alloc] init];
-//        [query setObject:(__bridge id)kSecClassKey forKey:(__bridge id)kSecClass];
-//        [query setObject:publicTag forKey:(__bridge id)kSecAttrApplicationTag];
-//        [query setObject:(__bridge id)kSecAttrKeyTypeRSA forKey:(__bridge id)kSecAttrKeyType];
-//        [query setObject:@(TRUE) forKey:(__bridge id)kSecReturnRef];
-//        
-//        OSStatus status = SecItemCopyMatching( (__bridge CFDictionaryRef)query, (CFTypeRef*)&publicKey );
-//        
-//        if ( status != noErr ) {
-//            NSLog( @"Error retrieving public key.Error Code: %ld", status );
-//            publicKey = 0;
-//        }
-//    }
-//    
-//    return publicKey;
-//}
-
-+(NSString *)randomStringGenerator:(int)length {
-    
-    NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    NSMutableString *randomString = [NSMutableString stringWithCapacity:length];
-    
-    for ( int i = 0; i < length ; i++) {
-        [randomString appendFormat: @"%c", [letters characterAtIndex:rand() % [letters length]]];
-    }
-    return randomString;
-}
-
-+(NSData *)encryptString:(NSString *)plaintext withKey:(NSString *)key andVector:(NSString *)initVector {
-//    return [[plaintext dataUsingEncoding:NSUTF8StringEncoding] AES256EncryptWithKey:key andVector:initVector];
-	return 0;
-}
-
-+(NSString*) decryptData:(NSData*)ciphertext withKey:(NSString*)key andVector:(NSString *)initVector {
-//    return [[NSString alloc] initWithData:[ciphertext AES256DecryptWithKey:key andVector:initVector]
-//                                 encoding:NSUTF8StringEncoding];
-	return 0;
-}
 
 +(NSString *)HMACSHA256String:(NSString *)string withKey:(NSString *)key {
     NSString *new = 0;

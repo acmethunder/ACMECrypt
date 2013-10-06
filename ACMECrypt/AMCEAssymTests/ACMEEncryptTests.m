@@ -59,7 +59,7 @@
 		self.privatekey = privateKey;
 	}
 	
-	self.iv = [ACMECrypt randomStringGenerator:16];
+	self.iv = (__bridge NSString *)(ACRandomString(16));
 	self.aes256Key = @"acmethunder";
 }
 
@@ -75,15 +75,15 @@
 -(void)testSimpleAssymEncryptDecrypt {
     NSString *simpleString = @"hello, world";
     NSData *simpleData = [simpleString dataUsingEncoding:NSUTF8StringEncoding];
-	NSData *encrypted = ACEncrypt(simpleData, self.publickey);
+	NSData *encrypted = (__bridge NSData *)(ACEncrypt((__bridge CFDataRef)(simpleData), self.publickey));
 	XCTAssertNotNil( encrypted, @"" );
 	XCTAssertFalse( [encrypted isEqualToData:simpleData], @"" );
 	
 	// Make public key can not decrypt
-	NSData *failData = ACDecryptWithKey(encrypted, self.publickey);
+	NSData *failData = (__bridge NSData *)(ACDecryptWithKey((__bridge CFDataRef)(encrypted), self.publickey));
 	XCTAssertNil( failData, @"" );
 	
-	NSData *decrypted = ACDecryptWithKey(encrypted, self.privatekey);
+	NSData *decrypted = (__bridge NSData *)(ACDecryptWithKey((__bridge CFDataRef)(encrypted), self.privatekey));
 	XCTAssertTrue( decrypted.length == simpleData.length, @"" );
 	NSString *decryptedString = [[NSString alloc] initWithData:decrypted encoding:NSUTF8StringEncoding];
 	XCTAssertTrue( [decryptedString isEqualToString:simpleString], @"" );
@@ -109,10 +109,10 @@
 	XCTAssertNil( jsonError, @"JSON Error: %@", jsonError.debugDescription );
 	XCTAssertTrue( jsonData.length > 0, @"" );
 	
-	NSData *encryptedJSON = ACEncrypt(jsonData, self.publickey);
+	NSData *encryptedJSON = (__bridge NSData *)(ACEncrypt((__bridge CFDataRef)(jsonData), self.publickey));
 	XCTAssertTrue( encryptedJSON.length > 0, @"" );
 	
-	NSData *decryptedJSON = ACDecryptWithKey(encryptedJSON, self.privatekey);
+	NSData *decryptedJSON = (__bridge NSData *)(ACDecryptWithKey((__bridge CFDataRef)(encryptedJSON), self.privatekey));
 	XCTAssertTrue( decryptedJSON.length > 0, @"" );
 	XCTAssertTrue( [decryptedJSON isEqualToData:jsonData], @"" );
 	
@@ -190,10 +190,11 @@
 	NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
 	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
 	
-	NSString *md5String = (__bridge NSString*)ACGetMD5((__bridge CFDataRef)(jsonData));
+	NSData *md5Data = (__bridge NSData*)ACGetMD5((__bridge CFDataRef)jsonData);
+	NSString *md5String = (__bridge NSString*)ACDataToHEX((__bridge CFDataRef)md5Data);
 	XCTAssertTrue( md5String.length == 32, @"" );
 	
-	NSString *testMD5 = @"858be8b0c08700867c623d1960165ddd";
+	NSString *testMD5 = [@"858be8b0c08700867c623d1960165ddd" uppercaseString];
 	XCTAssertTrue( [md5String isEqualToString:testMD5], @"" );
 }
 
@@ -201,6 +202,26 @@
 	NSData *data = nil;
 	NSString *md5 = (__bridge NSString *)(ACGetMD5((__bridge CFDataRef)(data)));
 	XCTAssertNil(md5, @"" );
+}
+
+#pragma mark -
+#pragma mark HMAC
+
+-(void)testSignHMACMD5 {
+	NSString *key = @"michaeldewolfe";
+	
+	NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
+	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
+	XCTAssertNotNil( jsonData, @"" );
+	
+	NSData *hmacedJSON = (__bridge id)ACHmac((__bridge CFDataRef)jsonData, (__bridge CFStringRef)key, kACHMACAlgMD5);
+	XCTAssertNotNil(hmacedJSON, @"" );
+	XCTAssertTrue( hmacedJSON.length > 0, @"" );
+	
+	
+	NSString *md5CHECK = [@"d6cc78998fe3f070eb285bb9ca9ed512" uppercaseString];
+	NSString *hexedJSON = (__bridge NSString *)(ACDataToHEX((__bridge CFDataRef)(hmacedJSON)));
+	XCTAssertEqualObjects(hexedJSON, md5CHECK, @"" );
 }
 
 @end
