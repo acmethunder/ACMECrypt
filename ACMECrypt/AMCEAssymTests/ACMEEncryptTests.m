@@ -193,6 +193,11 @@
 #pragma mark -
 #pragma mark Hashing
 
+/*!
+ *	@discussion
+ *		Check hash generated via Terminal:
+ *			> md5 ACMECrypt/AMCEAssymTests/sample_large_json.json
+ */
 -(void)testHashMD5 {
 	NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
 	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
@@ -211,6 +216,11 @@
 	XCTAssertNil(md5, @"" );
 }
 
+/*!
+ *	@discussion
+ *		Check hash generated via Terminal:
+ *			> shasum ACMECrypt/AMCEAssymTests/sample_large_json.json
+ */
 -(void)testHashSHA1 {
 	NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
 	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
@@ -225,6 +235,11 @@
 	XCTAssertEqualObjects(sha1, sha1CHECK, @"" );
 }
 
+/*!
+ *	@discussion
+ *		check hash generated via Terminal:
+ *			> shasum -a 224 ACMECrypt/AMCEAssymTests/sample_large_json.json
+ */
 -(void)testHashSHA224 {
 	NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
 	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
@@ -238,6 +253,11 @@
 	XCTAssertEqualObjects(sha224String, sha224CHECK, @"" );
 }
 
+/*!
+ *	@discussion
+ *		check hash generated via Terminal:
+ *			> shasum -a 256 ACMECrypt/AMCEAssymTests/sample_large_json.json
+ */
 -(void)testHashSHA256 {
 	NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
 	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
@@ -252,6 +272,11 @@
 	XCTAssertEqualObjects(  sha256String, sha256CHECK, @"" );
 }
 
+/*!
+ *	@discussion
+ *		check hash generated via Terminal:
+ *			> shasum -a 384 ACMECrypt/AMCEAssymTests/sample_large_json.json
+ */
 -(void)testHashSHA384 {
 	NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
 	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
@@ -266,6 +291,11 @@
 	XCTAssertEqualObjects(sha384String, sha384CHECK, @"" );
 }
 
+/*!
+ *	@discussion
+ *		check hash generated via Terminal:
+ *			> shasum -a 512 ACMECrypt/AMCEAssymTests/sample_large_json.json
+ */
 -(void)testHashSHA512 {
 	NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
 	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
@@ -283,8 +313,13 @@
 #pragma mark -
 #pragma mark HMAC
 
+/*!
+ *	@discussion
+ *		Signature generated via Terminal:
+ *			> openssl dgst -md5 -hmac "qwertyazerty" ACMECrypt/AMCEAssymTests/sample_large_json.json
+ */
 -(void)testSignHMACMD5 {
-	NSString *key = @"michaeldewolfe";
+	NSString *key = @"qwertyazerty";
 	
 	NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
 	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
@@ -295,7 +330,7 @@
 	XCTAssertTrue( hmacedJSON.length > 0, @"" );
 	
 	
-	NSString *md5CHECK = @"d6cc78998fe3f070eb285bb9ca9ed512";
+	NSString *md5CHECK = @"ddb67a34c3f54728ef3130fbf2031498";
 	NSString *hexedJSON = (__bridge NSString *)ACDataToHEX((__bridge CFDataRef)hmacedJSON,TRUE);
 	XCTAssertEqualObjects(hexedJSON, [md5CHECK uppercaseString], @"" );
 	

@@ -236,6 +236,7 @@ CFDataRef ACEncrypt(CFDataRef data, SecKeyRef publicKey) {
         if ( temp && (CFDataGetLength(temp) > 0) ) {
 			final = CFDataCreateCopy(kCFAllocatorDefault, temp);
         }
+		
         
         free(cipherBuffer);
     }
