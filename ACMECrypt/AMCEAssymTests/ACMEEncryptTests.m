@@ -198,7 +198,7 @@
 	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
 	
 	NSData *md5Data = (__bridge NSData*)ACGetMD5((__bridge CFDataRef)jsonData);
-	NSString *md5String = (__bridge NSString*)ACDataToHEX((__bridge CFDataRef)md5Data);
+	NSString *md5String = (__bridge NSString*)ACDataToHEX((__bridge CFDataRef)md5Data, true);
 	XCTAssertTrue( md5String.length == 32, @"" );
 	
 	NSString *testMD5 = [@"858be8b0c08700867c623d1960165ddd" uppercaseString];
@@ -218,7 +218,7 @@
 	NSData *sha1Data = (__bridge NSData*)ACGetSHA1((__bridge CFDataRef)jsonData);
 	XCTAssertTrue(sha1Data.length == CC_SHA1_DIGEST_LENGTH, @"" );
 	
-	NSString *sha1 = (__bridge NSString*)ACDataToHEX((__bridge CFDataRef)sha1Data);
+	NSString *sha1 = (__bridge NSString*)ACDataToHEX((__bridge CFDataRef)sha1Data, true);
 	XCTAssertTrue( sha1.length == (CC_SHA1_DIGEST_LENGTH * 2), @"" );
 	
 	NSString *sha1CHECK = [@"4304534fbae6f879ab91ea5096aa728a9efd6481" uppercaseString];
@@ -233,7 +233,7 @@
 	XCTAssertTrue(sha224Data.length == CC_SHA224_DIGEST_LENGTH, @"" );
 	
 	NSString *sha224CHECK = [@"3a85e22d843b0783be27af38dcb145678523aa83b06b0d74444830e7" uppercaseString];
-	NSString *sha224String = (__bridge NSString*)ACDataToHEX((__bridge CFDataRef)sha224Data);
+	NSString *sha224String = (__bridge NSString*)ACDataToHEX((__bridge CFDataRef)sha224Data, true);
 	XCTAssertEqualWithAccuracy(sha224String.length, (NSUInteger)(CC_SHA224_DIGEST_LENGTH*2), 0, @"" );
 	XCTAssertEqualObjects(sha224String, sha224CHECK, @"" );
 }
@@ -245,7 +245,7 @@
 	NSData *sha256Data = (__bridge NSData*)ACGetSHA256((__bridge CFDataRef)jsonData);
 	XCTAssertTrue( sha256Data.length > 1, @"" );
 	
-	NSString *sha256String = (__bridge NSString*)ACDataToHEX((__bridge CFDataRef)sha256Data);
+	NSString *sha256String = (__bridge NSString*)ACDataToHEX((__bridge CFDataRef)sha256Data, true);
 	XCTAssertEqualWithAccuracy( sha256String.length, (NSUInteger)(CC_SHA256_DIGEST_LENGTH * 2), 0, @"" );
 	
 	NSString *sha256CHECK = [@"5d572efc2336007b483c85957c75006de76d265e5ecb03d2c01f91952b79fef4" uppercaseString];
@@ -259,7 +259,7 @@
 	NSData *sha384Data = (__bridge NSData*)ACGetSHA384((__bridge CFDataRef)jsonData);
 	XCTAssert(sha384Data.length == CC_SHA384_DIGEST_LENGTH, @"" );
 	
-	NSString *sha384String = (__bridge NSString*)ACDataToHEX((__bridge CFDataRef)sha384Data);
+	NSString *sha384String = (__bridge NSString*)ACDataToHEX((__bridge CFDataRef)sha384Data, true);
 	XCTAssertEqualWithAccuracy(sha384String.length, (NSUInteger)(CC_SHA384_DIGEST_LENGTH * 2), 0, @"" );
 	
 	NSString *sha384CHECK = [@"40b408ebbb3fa57855e1e43978aaea8906cd23dc6d9add183346929b014d6ae2d124cdcd3c91ff5164aa76b86c7dbf27" uppercaseString];
@@ -273,7 +273,7 @@
 	NSData *sha512Data = (__bridge NSData*)ACGetSHA512((__bridge CFDataRef)jsonData);
 	XCTAssert(sha512Data.length == CC_SHA512_DIGEST_LENGTH, @"" );
 	
-	NSString *sha512String = (__bridge NSString*)ACDataToHEX((__bridge CFDataRef)sha512Data);
+	NSString *sha512String = (__bridge NSString*)ACDataToHEX((__bridge CFDataRef)sha512Data, true);
 	XCTAssertEqualWithAccuracy(sha512String.length, (NSUInteger)(CC_SHA512_DIGEST_LENGTH * 2), 0, @"" );
 	
 	NSString *sha512CHECK = [@"f3e2cde42d3a094b37b296346795c1df8b04172bd4f4ae73161428bcf836a66171fa702468a871b9352f562e61369a6b30a804290c1526ea36d4fec3aa073e04" uppercaseString];
@@ -295,9 +295,12 @@
 	XCTAssertTrue( hmacedJSON.length > 0, @"" );
 	
 	
-	NSString *md5CHECK = [@"d6cc78998fe3f070eb285bb9ca9ed512" uppercaseString];
-	NSString *hexedJSON = (__bridge NSString *)(ACDataToHEX((__bridge CFDataRef)(hmacedJSON)));
-	XCTAssertEqualObjects(hexedJSON, md5CHECK, @"" );
+	NSString *md5CHECK = @"d6cc78998fe3f070eb285bb9ca9ed512";
+	NSString *hexedJSON = (__bridge NSString *)ACDataToHEX((__bridge CFDataRef)hmacedJSON,TRUE);
+	XCTAssertEqualObjects(hexedJSON, [md5CHECK uppercaseString], @"" );
+	
+	NSString *lowerHex = (__bridge NSString*)ACDataToHEX((__bridge CFDataRef)(hmacedJSON), FALSE);
+	XCTAssertEqualObjects( lowerHex, md5CHECK, @"" );
 }
 
 @end

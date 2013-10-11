@@ -23,7 +23,7 @@ typedef enum uint32_t {
 	kACHMACAlgSHA384 = kCCHmacAlgSHA384,
 	kACHMACAlgSHA512 = kCCHmacAlgSHA512,
 	kACHMACAlgMD5    = kCCHmacAlgMD5
-}ACHAMCAlgorithm;
+}ACHMACAlgorithm;
 
 #pragma mark -
 #pragma mark FREE STANDING C FUNCTIONS
@@ -36,10 +36,12 @@ typedef enum uint32_t {
  *		Returns a string containing the uppercase hexits of the provided CFDataRef item.
  *	@param
  *		data (CFDataRef)
+ *	@param
+ *		upper (bool), pass 'true' if the return value should be in uppercase, 'false' for lowercase.
  *	@return
  *		CFStringRef, 'NULL' if an error occurs.
  */
-CFStringRef ACDataToHEX(CFDataRef data);
+CFStringRef ACDataToHEX(CFDataRef data, bool upper);
 
 #pragma mark Randon String Generator
 
@@ -179,6 +181,6 @@ CFDataRef ACGetSHA512(CFDataRef data);
 
 #pragma mark Signing
 
-CFDataRef ACHmac(CFDataRef data, CFStringRef key, ACHAMCAlgorithm alg);
+CFDataRef ACHmac(CFDataRef data, CFStringRef key, ACHMACAlgorithm alg);
 
 #endif

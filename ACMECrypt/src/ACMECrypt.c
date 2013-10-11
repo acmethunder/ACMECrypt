@@ -10,7 +10,8 @@
 #include "ACMECrypt.h"
 
 const char *kACMECryptChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-const char *kACryptHEXFormat = "%02X";
+const char *kACryptHEXFormatUpper = "%02X";
+const char *kACCryptHEXFormatLower = "%02x";
 
 const int kACMECryptNumCryptChars = 62;
 
@@ -18,7 +19,7 @@ const int kACMECryptNumCryptChars = 62;
 #pragma mark FREE STANDING C FUNCTIONS
 #pragma mark TO String
 
-CFStringRef ACDataToHEX(CFDataRef data) {
+CFStringRef ACDataToHEX(CFDataRef data, bool upper) {
 	CFStringRef final = NULL;
 	
 	CFIndex dataLength = ( data ? CFDataGetLength(data) : 0 );
@@ -27,7 +28,8 @@ CFStringRef ACDataToHEX(CFDataRef data) {
 		const UInt8 *dataptr = CFDataGetBytePtr(data);
 		
 		CFMutableStringRef temp = CFStringCreateMutable(kCFAllocatorDefault, dataLength * 2);
-		CFStringRef format = CFStringCreateWithCString(kCFAllocatorDefault, kACryptHEXFormat, kCFStringEncodingUTF8);
+		const char *formattype = ( upper ? kACryptHEXFormatUpper : kACCryptHEXFormatLower );
+		CFStringRef format = CFStringCreateWithCString(kCFAllocatorDefault, formattype, kCFStringEncodingUTF8);
 		
 		for ( int i = 0; i < dataLength; ++i ) {
 			CFStringAppendFormat(temp, NULL, format, dataptr[i]);
@@ -384,7 +386,7 @@ CFDataRef ACGetSHA512(CFDataRef data) {
 
 #pragma mark Signing
 
-CFDataRef ACHmac(CFDataRef data, CFStringRef key, ACHAMCAlgorithm alg) {
+CFDataRef ACHmac(CFDataRef data, CFStringRef key, ACHMACAlgorithm alg) {
 	CFIndex dataLength = ( data ? CFDataGetLength(data) : 0 );
 	CFIndex keyLength  = ( key ? CFStringGetLength(key) : 0 );
 	
