@@ -6,19 +6,23 @@
 //
 //
 
-#import <Foundation/Foundation.h>
-#import <CommonCrypto/CommonHMAC.h>
+#ifndef _ACMECRYPT_H_
+#define _ACMECRYPT_H_
+
+#include <CoreFoundation/CoreFoundation.h>
+#include <Security/Security.h>
+#include <CommonCrypto/CommonHMAC.h>
 
 #pragma mark -
 #pragma mark DATA TYPES
 
 typedef enum uint32_t {
-	kACHMACAlgSHA1 = kCCHmacAlgSHA1,
+	kACHMACAlgSHA1   = kCCHmacAlgSHA1,
 	kACHMACAlgSHA224 = kCCHmacAlgSHA224,
 	kACHMACAlgSHA256 = kCCHmacAlgSHA256,
 	kACHMACAlgSHA384 = kCCHmacAlgSHA384,
 	kACHMACAlgSHA512 = kCCHmacAlgSHA512,
-	kACHMACAlgMD5 = kCCHmacAlgMD5
+	kACHMACAlgMD5    = kCCHmacAlgMD5
 }ACHAMCAlgorithm;
 
 #pragma mark -
@@ -50,7 +54,7 @@ CFStringRef ACDataToHEX(CFDataRef data);
  *	@return
  *		CFStringRef, 'NULL' if an error occurs.
  */
-CFStringRef ACRandomString(NSUInteger length);
+CFStringRef ACRandomString(uint32_t length);
 
 #pragma mark Key Management
 
@@ -65,7 +69,7 @@ CFStringRef ACRandomString(NSUInteger length);
  *	@return
  *		SecKeyRef, 'NULL' if an error occurs.
  */
-SecKeyRef ACGetPublicKeyX509(CFStringRef certPath);
+SecKeyRef ACGetPublicKeyX509(CFDataRef certPath);
 
 #pragma mark Symmetric Encryption / Decryption
 
@@ -131,7 +135,7 @@ CFDataRef ACEncrypt(CFDataRef data, SecKeyRef publicKey);
 
 /*!
  *	@function
- *		ECDecrypt
+ *		ACDecrypt
  *	@abstract
  *		Decrypts the provided NSData object using 'key' as the decrytion key.
  *	@discussion
@@ -163,54 +167,18 @@ CFDataRef ACDecryptWithKey(CFDataRef data, SecKeyRef key);
  */
 CFDataRef ACGetMD5(CFDataRef data);
 
+CFDataRef ACGetSHA1(CFDataRef data);
+
+CFDataRef ACGetSHA224(CFDataRef data);
+
+CFDataRef ACGetSHA256(CFDataRef data);
+
+CFDataRef ACGetSHA384(CFDataRef data);
+
+CFDataRef ACGetSHA512(CFDataRef data);
+
 #pragma mark Signing
 
 CFDataRef ACHmac(CFDataRef data, CFStringRef key, ACHAMCAlgorithm alg);
 
-#pragma mark -
-#pragma mark EncryptionController DECLARATION
-
-/*!
- * @class
- * EncryptionController
- * @abstract
- * @discussion
- */
-@interface ACMECrypt : NSObject
-
-
-/*!
- * @method
- * HMACSHA256:withKey:
- * @abstract
- * Returns a hash of the provided string.
- * @discussion
- * The returned string is hex repsentation of the encrypted string.
- * @param
- * string, NSString to encrypt.
- * @param
- * key, Encryption key
- * @return
- * Encrypted string, 'nil' if an error occurs.
- */
-+(NSString *)HMACSHA256String:(NSString *)string withKey:(NSString *)key;
-
-/*!
- * @method
- * HMACMD5:withKey:
- * @abstract
- * Hashes the provided NSData object with the provided key, using the MD5 algorithm.
- * @discussion
- * Possible errors that will cause this method to return 'nil':
- * - 'key' is 'nil' or an empty string.
- * - 'data' is not actually an instance of NSData.
- * @param
- * data (NSData*), item to hash.
- * @param
- * key (NSString*), key used by hashing algorithm.
- * @return
- * NSString* - MD% hash of the provided data object, 'nil' if an error occurs.
- */
-+(NSString*)HMACMD5:(NSData*)data withKey:(NSString*)key;
-
-@end
+#endif
