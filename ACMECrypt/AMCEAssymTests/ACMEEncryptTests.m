@@ -9,6 +9,7 @@
 #import <XCTest/XCTest.h>
 
 #import "ACMECrypt.h"
+#import "ACMEEncode.h"
 
 @interface ACMEEncryptTests : XCTestCase
 
@@ -336,6 +337,18 @@
 	
 	NSString *lowerHex = (__bridge NSString*)ACDataToHEX((__bridge CFDataRef)(hmacedJSON), FALSE);
 	XCTAssertEqualObjects( lowerHex, md5CHECK, @"" );
+}
+
+#pragma mark -
+#pragma mark Base 64 Encoding
+
+-(void)testBase64EncodeData {
+	NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
+	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
+	XCTAssertNotNil( jsonData, @"" );
+	
+	NSString *base64String = CFBridgingRelease(ACBase64Encode((__bridge CFDataRef)(jsonData)));
+	XCTAssertFalse( base64String, @"" );
 }
 
 @end

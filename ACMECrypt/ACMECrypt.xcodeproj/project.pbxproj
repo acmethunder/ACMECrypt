@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		51148DD9182D576B00E61925 /* ACMEEncode.c in Sources */ = {isa = PBXBuildFile; fileRef = 51148DD8182D576B00E61925 /* ACMEEncode.c */; };
 		5151358817F51AE9007CF5A6 /* rsa_private_key.p12 in Resources */ = {isa = PBXBuildFile; fileRef = 5151358617F51AE9007CF5A6 /* rsa_private_key.p12 */; };
 		5151358917F51AE9007CF5A6 /* rsa_public_key.der in Resources */ = {isa = PBXBuildFile; fileRef = 5151358717F51AE9007CF5A6 /* rsa_public_key.der */; };
 		51D2FD1A17F7330C006B11ED /* sample_large_json.json in Resources */ = {isa = PBXBuildFile; fileRef = 51D2FD1917F7330C006B11ED /* sample_large_json.json */; };
@@ -19,6 +20,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		51148DD8182D576B00E61925 /* ACMEEncode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ACMEEncode.c; sourceTree = "<group>"; };
+		51148DDA182D577F00E61925 /* ACMEEncode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ACMEEncode.h; sourceTree = "<group>"; };
 		5151358617F51AE9007CF5A6 /* rsa_private_key.p12 */ = {isa = PBXFileReference; lastKnownFileType = file; path = rsa_private_key.p12; sourceTree = "<group>"; };
 		5151358717F51AE9007CF5A6 /* rsa_public_key.der */ = {isa = PBXFileReference; lastKnownFileType = file; path = rsa_public_key.der; sourceTree = "<group>"; };
 		51D2FD1917F7330C006B11ED /* sample_large_json.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = sample_large_json.json; sourceTree = "<group>"; };
@@ -63,6 +66,8 @@
 			children = (
 				51E2B62B17F3C1E400E382D0 /* ACMECrypt.h */,
 				51E2B62C17F3C1E400E382D0 /* ACMECrypt.c */,
+				51148DD8182D576B00E61925 /* ACMEEncode.c */,
+				51148DDA182D577F00E61925 /* ACMEEncode.h */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -171,6 +176,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				51148DD9182D576B00E61925 /* ACMEEncode.c in Sources */,
 				51E2B64617F3C52600E382D0 /* ACMECrypt.c in Sources */,
 				51E2B64117F3C2DA00E382D0 /* ACMEEncryptTests.m in Sources */,
 			);
