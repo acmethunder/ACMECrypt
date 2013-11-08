@@ -15,3 +15,10 @@ CFStringRef ACBase64Encode(CFDataRef data) {
 	
 	return final;
 }
+
+CFStringRef ACBase64EncodeString(CFStringRef text) { return NULL; }
+
+#pragma mark -
+#pragma mark Base 64 Decoding
+
+CFDataRef ACBase64Decode(CFStringRef base64String) { return NULL; }
