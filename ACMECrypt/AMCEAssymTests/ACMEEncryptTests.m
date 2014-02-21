@@ -101,7 +101,8 @@
 															  error:&readError];
 	
 	NSError *jsonError = 0;
-	NSDictionary *json = [NSJSONSerialization JSONObjectWithData:[jsonString dataUsingEncoding:NSUTF8StringEncoding]
+	NSData *json_data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+	NSDictionary *json = [NSJSONSerialization JSONObjectWithData:json_data
 														 options:0
 														   error:&jsonError];
 	XCTAssertTrue( [json isKindOfClass:[NSDictionary class]], @"" );

@@ -35,12 +35,16 @@ CFStringRef ACDataToHEX(CFDataRef data, bool upper) {
 			CFStringAppendFormat(temp, NULL, format, dataptr[i]);
 		}
 		
-		if ( CFStringGetLength(temp) > 0 ) {
+		if ( format ) {
+			CFRelease(format);
+		}
+		
+		if ( temp ) {
 			final = CFStringCreateCopy(kCFAllocatorDefault, temp);
+			CFRelease(temp);
 		}
 	}
-	
-	
+
 	return final;
 }
 
@@ -50,6 +54,7 @@ CFStringRef ACRandomString(uint32_t length) {
 	CFStringRef final = NULL;
 	
 	CFMutableStringRef temp = CFStringCreateMutable(kCFAllocatorDefault, (CFIndex)length);
+	assert(temp);
 	
 	for ( uint32_t i = 0; i < length; ++i ) {
 		uint32_t rand = arc4random() % kACMECryptNumCryptChars;
@@ -57,8 +62,9 @@ CFStringRef ACRandomString(uint32_t length) {
 		CFStringAppendCharacters(temp, &c, 1);
 	}
 	
-	if ( CFStringGetLength(temp) > 0 ) {
+	if ( temp ) {
 		final = CFStringCreateCopy(kCFAllocatorDefault, temp);
+		CFRelease(temp);
 	}
 	
 	return final;
@@ -211,9 +217,11 @@ CFDataRef ACEncrypt(CFDataRef data, SecKeyRef publicKey) {
         const size_t inputBlocSize = cipherBufferSize - 12;
         uint8_t *cipherBuffer = malloc(cipherBufferSize);
 		CFMutableDataRef temp = CFDataCreateMutable(kCFAllocatorDefault, cipherBufferSize * dataLength);
+		assert(temp);
+		
 		uint32_t maxlength = dataLength;
         
-        for ( size_t block = 0; block * inputBlocSize < maxlength; ++block ) {
+        for ( size_t block = 0; (block * inputBlocSize) < maxlength; ++block ) {
             size_t blockoffset = block * inputBlocSize;
             const uint8_t *chunk = fullthing + blockoffset;
             const size_t remainingsize = maxlength - blockoffset;
@@ -228,15 +236,16 @@ CFDataRef ACEncrypt(CFDataRef data, SecKeyRef publicKey) {
             }
             else {
                 printf( "Unable to encrypt data. Status: %ld", status);
-                temp = 0;
+				CFRelease(temp);
+                temp = NULL;
                 break;
             }
         }
         
-        if ( temp && (CFDataGetLength(temp) > 0) ) {
+        if ( temp ) {
 			final = CFDataCreateCopy(kCFAllocatorDefault, temp);
+			CFRelease(temp);
         }
-		
         
         free(cipherBuffer);
     }
@@ -279,15 +288,17 @@ CFDataRef ACDecryptWithKey(CFDataRef data, SecKeyRef key) {
             }
             else {
                 printf("Unable to encrypt data. Status: %ld", status);
-                temp = 0;
+				CFRelease(temp);
+                temp = NULL;
                 break;
             }
         }
         
-		if ( temp && (CFDataGetLength(temp) > 0) ) {
+		if ( temp ) {
             final = CFDataCreateCopy(kCFAllocatorDefault, temp);
+			CFRelease(temp);
         }
-        
+		
         free(cipherBuffer);
     }
     
@@ -323,7 +334,7 @@ CFDataRef ACGetSHA1(CFDataRef data) {
 		final = CFDataCreate(kCFAllocatorDefault, digest, CC_SHA1_DIGEST_LENGTH);
 	}
 	
-	return final;
+	return  final;
 }
 
 CFDataRef ACGetSHA224(CFDataRef data) {
@@ -418,8 +429,12 @@ CFDataRef ACHmac(CFDataRef data, CFStringRef key, ACHMACAlgorithm alg) {
 		
 		const char *keyptr = CFStringGetCStringPtr(key, kCFStringEncodingUTF8);
 		const char *dataptr = (char*)CFDataGetBytePtr(data);
-		
+
+		// TODO (miked): this needs to be fixed
 		unsigned char chmac[digestLength];
+//		unsigned char *chmac = malloc(sizeof(unsigned char) * digestLength);
+//		memset(chmac, 0, sizeof(unsigned char) * digestLength);
+		
 		
 		CCHmac(alg, keyptr, keyLength, dataptr, dataLength, chmac);
 		
