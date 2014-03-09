@@ -723,6 +723,7 @@
 				51C46D1318B7066B00E672C5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		51C46D1718B7066B00E672C5 /* Build configuration list for PBXNativeTarget "ACMECrypt DemoTests" */ = {
 			isa = XCConfigurationList;
@@ -731,6 +732,7 @@
 				51C46D1518B7066B00E672C5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		51E2B62717F3C19000E382D0 /* Build configuration list for PBXProject "ACMECrypt" */ = {
 			isa = XCConfigurationList;
