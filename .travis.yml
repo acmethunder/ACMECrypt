@@ -1,2 +1,2 @@
 language: objective-c
-script: xctool -project ACMECrypt/ACMECryot.xcodeproj -scheme AMCEAssymTests
+script: xctool -project ACMECrypt/ACMECrypt.xcodeproj -scheme AMCEAssymTests
