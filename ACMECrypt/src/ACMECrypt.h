@@ -13,6 +13,8 @@
 #include <Security/Security.h>
 #include <CommonCrypto/CommonHMAC.h>
 
+#include "ACMEHash.h"
+
 #pragma mark -
 #pragma mark DATA TYPES
 
@@ -31,7 +33,7 @@ typedef enum uint32_t {
 
 /*!
  *	@function
- *		ACDataToHEX
+ *		ACMDataToHEX
  *	@abstract
  *		Returns a string containing the uppercase hexits of the provided CFDataRef item.
  *	@param
@@ -41,13 +43,13 @@ typedef enum uint32_t {
  *	@return
  *		CFStringRef, 'NULL' if an error occurs.
  */
-CFStringRef ACDataToHEX(CFDataRef data, bool upper);
+CFStringRef ACMDataToHEX(CFDataRef data, bool upper);
 
 #pragma mark Randon String Generator
 
 /*!
  *	@function
- *		ACRandomString
+ *		ACMRandomString
  *	@abstract
  *		Generates a random string of the specified length.
  *	@discussion
@@ -56,7 +58,7 @@ CFStringRef ACDataToHEX(CFDataRef data, bool upper);
  *	@return
  *		CFStringRef, 'NULL' if an error occurs.
  */
-CFStringRef ACRandomString(uint32_t length);
+CFStringRef ACMRandomString(uint32_t length);
 
 #pragma mark Key Management
 
@@ -71,13 +73,13 @@ CFStringRef ACRandomString(uint32_t length);
  *	@return
  *		SecKeyRef, 'NULL' if an error occurs.
  */
-SecKeyRef ACGetPublicKeyX509(CFDataRef certPath);
+SecKeyRef ACMGetPublicKeyX509(CFDataRef certPath);
 
 #pragma mark Symmetric Encryption / Decryption
 
 /*!
  *	@function
- *		ECEncryptAES256
+ *		ACMEncryptAES256
  *	@abstract
  *		Encrypts the provided NSData object with key and initialization vector.
  *	@discussion
@@ -94,11 +96,11 @@ SecKeyRef ACGetPublicKeyX509(CFDataRef certPath);
  *	@return
  *		CFDataRef, 'NULL' if an error occurs.
  */
-CFDataRef ACEncryptAES256(CFDataRef data, CFStringRef key, CFStringRef initVector);
+CFDataRef ACMEncryptAES256(CFDataRef data, CFStringRef key, CFStringRef initVector);
 
 /*!
  *	@function
- *		ACDecryptAES256
+ *		ACMDecryptAES256
  *	@abstract
  *		Decrypts the provided binary object.
  *	@discussion
@@ -112,13 +114,13 @@ CFDataRef ACEncryptAES256(CFDataRef data, CFStringRef key, CFStringRef initVecto
  *	@return
  *		CFDataRef, decrypted data, 'NULL' if an error occurs.
  */
-CFDataRef ACDecryptAES256(CFDataRef data, CFStringRef key, CFStringRef initVector);
+CFDataRef ACMDecryptAES256(CFDataRef data, CFStringRef key, CFStringRef initVector);
 
 #pragma mark Assymetric Encryption / Decryption
 
 /*!
  *	@function
- *		ACEncrypt
+ *		ACMEncrypt
  *	@abstract
  *		Encrypts the provided data object with the provided key.
  *	@discussion
@@ -133,11 +135,11 @@ CFDataRef ACDecryptAES256(CFDataRef data, CFStringRef key, CFStringRef initVecto
  *	@return
  *		CFDataRef, 'NULL' if an error occurs.
  */
-CFDataRef ACEncrypt(CFDataRef data, SecKeyRef publicKey);
+CFDataRef ACMEncrypt(CFDataRef data, SecKeyRef publicKey);
 
 /*!
  *	@function
- *		ACDecrypt
+ *		ACMDecrypt
  *	@abstract
  *		Decrypts the provided NSData object using 'key' as the decrytion key.
  *	@discussion
@@ -151,36 +153,10 @@ CFDataRef ACEncrypt(CFDataRef data, SecKeyRef publicKey);
  *	@return
  *		NSData*, decrypted data object, or 'nil' if an error occurs.
  */
-CFDataRef ACDecryptWithKey(CFDataRef data, SecKeyRef key);
-
-#pragma mark Hashing
-
-/*!
- *	@function
- *		ECGetMD5
- *	@abstract
- *		Calculates the MD5 hash of the provided data object.
- *	@discussion
- *		Will only calculate the MD5 hash if the provided data object has a lenght of greater than zero.
- *	@param
- *		data (CFDataRef), data to hash.
- *	@return
- *		CFDataRef, 'NULL' if an error occurs.
- */
-CFDataRef ACGetMD5(CFDataRef data);
-
-CFDataRef ACGetSHA1(CFDataRef data);
-
-CFDataRef ACGetSHA224(CFDataRef data);
-
-CFDataRef ACGetSHA256(CFDataRef data);
-
-CFDataRef ACGetSHA384(CFDataRef data);
-
-CFDataRef ACGetSHA512(CFDataRef data);
+CFDataRef ACMDecryptWithKey(CFDataRef data, SecKeyRef key);
 
 #pragma mark Signing
 
-CFDataRef ACHmac(CFDataRef data, CFStringRef key, ACHMACAlgorithm alg);
+CFDataRef ACMHmac(CFDataRef data, CFStringRef key, ACHMACAlgorithm alg);
 
 #endif

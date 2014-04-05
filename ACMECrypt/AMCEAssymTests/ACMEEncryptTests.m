@@ -33,7 +33,7 @@
 	NSString *keypath = [[NSBundle bundleForClass:self.class] pathForResource:@"rsa_public_key" ofType:@"der"];
 	XCTAssertTrue( keypath.length > 0, @"" );
 	NSData *certData = [[NSData alloc] initWithContentsOfFile:keypath];
-	SecKeyRef publickey = ACGetPublicKeyX509((__bridge CFDataRef)certData);
+	SecKeyRef publickey = ACMGetPublicKeyX509((__bridge CFDataRef)certData);
 	XCTAssertFalse( publickey == NULL, @"" );
 	self.publickey = publickey;
 	
@@ -61,7 +61,7 @@
 		self.privatekey = privateKey;
 	}
 	
-	self.iv = (__bridge NSString *)(ACRandomString(16));
+	self.iv = (__bridge NSString *)(ACMRandomString(16));
 	self.aes256Key = @"acmethunder";
 }
 
@@ -77,15 +77,15 @@
 -(void)testSimpleAssymEncryptDecrypt {
     NSString *simpleString = @"hello, world";
     NSData *simpleData = [simpleString dataUsingEncoding:NSUTF8StringEncoding];
-	NSData *encrypted = (__bridge NSData *)(ACEncrypt((__bridge CFDataRef)(simpleData), self.publickey));
+	NSData *encrypted = (__bridge NSData *)(ACMEncrypt((__bridge CFDataRef)(simpleData), self.publickey));
 	XCTAssertNotNil( encrypted, @"" );
 	XCTAssertFalse( [encrypted isEqualToData:simpleData], @"" );
 	
 	// Make public key can not decrypt
-	NSData *failData = (__bridge NSData *)(ACDecryptWithKey((__bridge CFDataRef)(encrypted), self.publickey));
+	NSData *failData = (__bridge NSData *)(ACMDecryptWithKey((__bridge CFDataRef)(encrypted), self.publickey));
 	XCTAssertNil( failData, @"" );
 	
-	NSData *decrypted = (__bridge NSData *)(ACDecryptWithKey((__bridge CFDataRef)(encrypted), self.privatekey));
+	NSData *decrypted = (__bridge NSData *)(ACMDecryptWithKey((__bridge CFDataRef)(encrypted), self.privatekey));
 	XCTAssertTrue( decrypted.length == simpleData.length, @"" );
 	NSString *decryptedString = [[NSString alloc] initWithData:decrypted encoding:NSUTF8StringEncoding];
 	XCTAssertTrue( [decryptedString isEqualToString:simpleString], @"" );
@@ -112,10 +112,10 @@
 	XCTAssertNil( jsonError, @"JSON Error: %@", jsonError.debugDescription );
 	XCTAssertTrue( jsonData.length > 0, @"" );
 	
-	NSData *encryptedJSON = (__bridge NSData *)(ACEncrypt((__bridge CFDataRef)(jsonData), self.publickey));
+	NSData *encryptedJSON = (__bridge NSData *)(ACMEncrypt((__bridge CFDataRef)(jsonData), self.publickey));
 	XCTAssertTrue( encryptedJSON.length > 0, @"" );
 	
-	NSData *decryptedJSON = (__bridge NSData *)(ACDecryptWithKey((__bridge CFDataRef)(encryptedJSON), self.privatekey));
+	NSData *decryptedJSON = (__bridge NSData *)(ACMDecryptWithKey((__bridge CFDataRef)(encryptedJSON), self.privatekey));
 	XCTAssertTrue( decryptedJSON.length > 0, @"" );
 	XCTAssertTrue( [decryptedJSON isEqualToData:jsonData], @"" );
 	
@@ -132,7 +132,7 @@
 	NSString *helloString = @"hello, world";
 	NSData *helloData = [helloString dataUsingEncoding:NSUTF8StringEncoding];
 	
-	NSData *encrypted = (__bridge NSData *)(ACEncryptAES256(
+	NSData *encrypted = (__bridge NSData *)(ACMEncryptAES256(
 															(__bridge CFDataRef)(helloData),
 															(__bridge CFStringRef)(self.aes256Key),
 															(__bridge CFStringRef)(self.iv)) );
@@ -140,7 +140,7 @@
 	XCTAssertTrue( encrypted.length > 0, @"" );
 	XCTAssertFalse( [encrypted isEqualToData:helloData], @"" );
 	
-	NSData *decrypted = (__bridge NSData *)(ACDecryptAES256(
+	NSData *decrypted = (__bridge NSData *)(ACMDecryptAES256(
 															(__bridge CFDataRef)(encrypted),
 															(__bridge CFStringRef)(self.aes256Key),
 															(__bridge CFStringRef)(self.iv)) );
@@ -172,14 +172,14 @@
 	XCTAssertNil( jsonError, @"JSON Error: %@", jsonError.debugDescription );
 	XCTAssertTrue( jsonData.length > 0, @"" );
 	
-	NSData *encryptedJSON = (__bridge NSData *)(ACEncryptAES256(
+	NSData *encryptedJSON = (__bridge NSData *)(ACMEncryptAES256(
 																(__bridge CFDataRef)(jsonData),
 																(__bridge CFStringRef)(self.aes256Key),
 																(__bridge CFStringRef)(self.iv) ));
 	XCTAssertTrue( encryptedJSON.length > 0, @"" );
 	XCTAssertFalse( [encryptedJSON isEqualToData:jsonData], @"" );
 	
-	NSData *decryptedJSON = (__bridge NSData *)(ACDecryptAES256(
+	NSData *decryptedJSON = (__bridge NSData *)(ACMDecryptAES256(
 																(__bridge CFDataRef)(encryptedJSON),
 																(__bridge CFStringRef)(self.aes256Key),
 																(__bridge CFStringRef)(self.iv) ));
@@ -205,7 +205,7 @@
 	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
 	
 	NSData *md5Data = (__bridge NSData*)ACGetMD5((__bridge CFDataRef)jsonData);
-	NSString *md5String = (__bridge NSString*)ACDataToHEX((__bridge CFDataRef)md5Data, true);
+	NSString *md5String = (__bridge NSString*)ACMDataToHEX((__bridge CFDataRef)md5Data, true);
 	XCTAssertTrue( md5String.length == 32, @"" );
 	
 	NSString *testMD5 = [@"858be8b0c08700867c623d1960165ddd" uppercaseString];
@@ -230,7 +230,7 @@
 	NSData *sha1Data = (__bridge NSData*)ACGetSHA1((__bridge CFDataRef)jsonData);
 	XCTAssertTrue(sha1Data.length == CC_SHA1_DIGEST_LENGTH, @"" );
 	
-	NSString *sha1 = (__bridge NSString*)ACDataToHEX((__bridge CFDataRef)sha1Data, true);
+	NSString *sha1 = (__bridge NSString*)ACMDataToHEX((__bridge CFDataRef)sha1Data, true);
 	XCTAssertTrue( sha1.length == (CC_SHA1_DIGEST_LENGTH * 2), @"" );
 	
 	NSString *sha1CHECK = [@"4304534fbae6f879ab91ea5096aa728a9efd6481" uppercaseString];
@@ -250,7 +250,7 @@
 	XCTAssertTrue(sha224Data.length == CC_SHA224_DIGEST_LENGTH, @"" );
 	
 	NSString *sha224CHECK = [@"3a85e22d843b0783be27af38dcb145678523aa83b06b0d74444830e7" uppercaseString];
-	NSString *sha224String = (__bridge NSString*)ACDataToHEX((__bridge CFDataRef)sha224Data, true);
+	NSString *sha224String = (__bridge NSString*)ACMDataToHEX((__bridge CFDataRef)sha224Data, true);
 	XCTAssertEqualWithAccuracy(sha224String.length, (NSUInteger)(CC_SHA224_DIGEST_LENGTH*2), 0, @"" );
 	XCTAssertEqualObjects(sha224String, sha224CHECK, @"" );
 }
@@ -267,7 +267,7 @@
 	NSData *sha256Data = (__bridge NSData*)ACGetSHA256((__bridge CFDataRef)jsonData);
 	XCTAssertTrue( sha256Data.length > 1, @"" );
 	
-	NSString *sha256String = (__bridge NSString*)ACDataToHEX((__bridge CFDataRef)sha256Data, true);
+	NSString *sha256String = (__bridge NSString*)ACMDataToHEX((__bridge CFDataRef)sha256Data, true);
 	XCTAssertEqualWithAccuracy( sha256String.length, (NSUInteger)(CC_SHA256_DIGEST_LENGTH * 2), 0, @"" );
 	
 	NSString *sha256CHECK = [@"5d572efc2336007b483c85957c75006de76d265e5ecb03d2c01f91952b79fef4" uppercaseString];
@@ -286,7 +286,7 @@
 	NSData *sha384Data = (__bridge NSData*)ACGetSHA384((__bridge CFDataRef)jsonData);
 	XCTAssert(sha384Data.length == CC_SHA384_DIGEST_LENGTH, @"" );
 	
-	NSString *sha384String = (__bridge NSString*)ACDataToHEX((__bridge CFDataRef)sha384Data, true);
+	NSString *sha384String = (__bridge NSString*)ACMDataToHEX((__bridge CFDataRef)sha384Data, true);
 	XCTAssertEqualWithAccuracy(sha384String.length, (NSUInteger)(CC_SHA384_DIGEST_LENGTH * 2), 0, @"" );
 	
 	NSString *sha384CHECK = [@"40b408ebbb3fa57855e1e43978aaea8906cd23dc6d9add183346929b014d6ae2d124cdcd3c91ff5164aa76b86c7dbf27" uppercaseString];
@@ -305,7 +305,7 @@
 	NSData *sha512Data = (__bridge NSData*)ACGetSHA512((__bridge CFDataRef)jsonData);
 	XCTAssert(sha512Data.length == CC_SHA512_DIGEST_LENGTH, @"" );
 	
-	NSString *sha512String = (__bridge NSString*)ACDataToHEX((__bridge CFDataRef)sha512Data, true);
+	NSString *sha512String = (__bridge NSString*)ACMDataToHEX((__bridge CFDataRef)sha512Data, true);
 	XCTAssertEqualWithAccuracy(sha512String.length, (NSUInteger)(CC_SHA512_DIGEST_LENGTH * 2), 0, @"" );
 	
 	NSString *sha512CHECK = [@"f3e2cde42d3a094b37b296346795c1df8b04172bd4f4ae73161428bcf836a66171fa702468a871b9352f562e61369a6b30a804290c1526ea36d4fec3aa073e04" uppercaseString];
@@ -327,17 +327,39 @@
 	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
 	XCTAssertNotNil( jsonData, @"" );
 	
-	NSData *hmacedJSON = (__bridge id)ACHmac((__bridge CFDataRef)jsonData, (__bridge CFStringRef)key, kACHMACAlgMD5);
+	NSData *hmacedJSON = (__bridge id)ACMHmac((__bridge CFDataRef)jsonData, (__bridge CFStringRef)key, kACHMACAlgMD5);
 	XCTAssertNotNil(hmacedJSON, @"" );
 	XCTAssertTrue( hmacedJSON.length > 0, @"" );
 	
 	
 	NSString *md5CHECK = @"ddb67a34c3f54728ef3130fbf2031498";
-	NSString *hexedJSON = (__bridge NSString *)ACDataToHEX((__bridge CFDataRef)hmacedJSON,TRUE);
+	NSString *hexedJSON = (__bridge NSString *)ACMDataToHEX((__bridge CFDataRef)hmacedJSON,TRUE);
 	XCTAssertEqualObjects(hexedJSON, [md5CHECK uppercaseString], @"" );
 	
-	NSString *lowerHex = (__bridge NSString*)ACDataToHEX((__bridge CFDataRef)(hmacedJSON), FALSE);
+	NSString *lowerHex = (__bridge NSString*)ACMDataToHEX((__bridge CFDataRef)(hmacedJSON), FALSE);
 	XCTAssertEqualObjects( lowerHex, md5CHECK, @"" );
+}
+
+/*!
+ *	@discussion
+ *		Signature generated via Terminal:
+ *			> openssl dgst -sha1 -hmac "qwertyazerty" ACMECrypt/AMCEAssymTests/sample_large_json.json
+ */
+-(void)testSignHAMCSHA1 {
+    NSString *key = @"qwertyazerty";
+    NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
+	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
+    NSData *hmacedJSON = (__bridge id)ACMHmac((__bridge CFDataRef)jsonData, (__bridge CFStringRef)key, kACHMACAlgSHA1);
+    
+    XCTAssertNotNil(hmacedJSON, @"" );
+	XCTAssertTrue( hmacedJSON.length > 0, @"" );
+
+	NSString *sha1Check = @"b82f69844a68cdc6daf8a4235d34ede793bfb274";
+	NSString *hexedJSON = (__bridge NSString *)ACMDataToHEX((__bridge CFDataRef)hmacedJSON,TRUE);
+	XCTAssertEqualObjects(hexedJSON, [sha1Check uppercaseString], @"" );
+	
+	NSString *lowerHex = (__bridge NSString*)ACMDataToHEX((__bridge CFDataRef)(hmacedJSON), FALSE);
+	XCTAssertEqualObjects( lowerHex, sha1Check, @"" );
 }
 
 #pragma mark -

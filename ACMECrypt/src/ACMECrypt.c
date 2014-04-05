@@ -19,7 +19,7 @@ const int kACMECryptNumCryptChars = 62;
 #pragma mark FREE STANDING C FUNCTIONS
 #pragma mark TO String
 
-CFStringRef ACDataToHEX(CFDataRef data, bool upper) {
+CFStringRef ACMDataToHEX(CFDataRef data, bool upper) {
 	CFStringRef final = NULL;
 	
 	CFIndex dataLength = ( data ? CFDataGetLength(data) : 0 );
@@ -50,7 +50,7 @@ CFStringRef ACDataToHEX(CFDataRef data, bool upper) {
 
 #pragma mark Randon String Generator
 
-CFStringRef ACRandomString(uint32_t length) {
+CFStringRef ACMRandomString(uint32_t length) {
 	CFStringRef final = NULL;
 	
 	CFMutableStringRef temp = CFStringCreateMutable(kCFAllocatorDefault, (CFIndex)length);
@@ -72,7 +72,7 @@ CFStringRef ACRandomString(uint32_t length) {
 
 #pragma mark Key Management
 
-SecKeyRef ACGetPublicKeyX509(CFDataRef certData) {
+SecKeyRef ACMGetPublicKeyX509(CFDataRef certData) {
     SecKeyRef keyRef = NULL;
 	
 	CFIndex length = ( certData ? CFDataGetLength(certData) : (CFIndex)0 );
@@ -100,7 +100,7 @@ SecKeyRef ACGetPublicKeyX509(CFDataRef certData) {
 
 #pragma mark Symmetric Encryption / Decryption
 
-CFDataRef ACEncryptAES256(CFDataRef data, CFStringRef key, CFStringRef initVector) {
+CFDataRef ACMEncryptAES256(CFDataRef data, CFStringRef key, CFStringRef initVector) {
     CFDataRef final = NULL;
 	
 	CFIndex dataLength = ( data ? CFDataGetLength(data) : (CFIndex)0 );
@@ -151,7 +151,7 @@ CFDataRef ACEncryptAES256(CFDataRef data, CFStringRef key, CFStringRef initVecto
     return final;
 }
 
-CFDataRef ACDecryptAES256(CFDataRef data, CFStringRef key, CFStringRef initVector) {
+CFDataRef ACMDecryptAES256(CFDataRef data, CFStringRef key, CFStringRef initVector) {
 	CFDataRef final = 0;
 	
 	CFIndex dataLength = ( data ? CFDataGetLength(data) : 0 );
@@ -205,7 +205,7 @@ CFDataRef ACDecryptAES256(CFDataRef data, CFStringRef key, CFStringRef initVecto
 
 #pragma mark Assymetric Encryption / Decryption
 
-CFDataRef ACEncrypt(CFDataRef data, SecKeyRef publicKey) {
+CFDataRef ACMEncrypt(CFDataRef data, SecKeyRef publicKey) {
     CFDataRef final = 0;
 	
 	CFIndex dataLength = ( data ? CFDataGetLength(data) : (CFIndex)0 );
@@ -253,7 +253,7 @@ CFDataRef ACEncrypt(CFDataRef data, SecKeyRef publicKey) {
     return final;
 }
 
-CFDataRef ACDecryptWithKey(CFDataRef data, SecKeyRef key) {
+CFDataRef ACMDecryptWithKey(CFDataRef data, SecKeyRef key) {
     CFDataRef final = 0;
 	
 	CFIndex dataLength = ( data ? CFDataGetLength(data) : 0 );
@@ -307,98 +307,11 @@ CFDataRef ACDecryptWithKey(CFDataRef data, SecKeyRef key) {
 
 #pragma mark Hashing
 
-CFDataRef ACGetMD5(CFDataRef data) {
-	CFDataRef final = NULL;
-    CFIndex length = ( data ? CFDataGetLength(data) : 0 );
-    if ( length > 0 ) {
-        const char *plainText = (char*)CFDataGetBytePtr(data);
-        unsigned char digest[CC_MD5_DIGEST_LENGTH];
-        
-        CC_MD5(plainText, length, digest);
-		
-		final = CFDataCreate(kCFAllocatorDefault, digest, CC_MD5_DIGEST_LENGTH);
-    }
-    
-    return final;
-}
 
-CFDataRef ACGetSHA1(CFDataRef data) {
-	CFDataRef final = NULL;
-	CFIndex dataLength = ( data ? CFDataGetLength(data) : 0 );
-	
-	if ( dataLength > 0 ) {
-		const char *plain = (char*)CFDataGetBytePtr(data);
-		unsigned char digest[CC_SHA1_DIGEST_LENGTH];
-		
-		CC_SHA1(plain, dataLength, digest);
-		final = CFDataCreate(kCFAllocatorDefault, digest, CC_SHA1_DIGEST_LENGTH);
-	}
-	
-	return  final;
-}
-
-CFDataRef ACGetSHA224(CFDataRef data) {
-	CFDataRef final = NULL;
-	
-	CFIndex length = ( data ? CFDataGetLength(data) : 0 );
-	if ( length > 0 ) {
-		const char *plain = (char*)CFDataGetBytePtr(data);
-		unsigned char digest[CC_SHA224_DIGEST_LENGTH];
-		
-		CC_SHA224(plain, length, digest);
-		final = CFDataCreate(kCFAllocatorDefault, digest, CC_SHA224_DIGEST_LENGTH);
-	}
-	
-	return final;
-}
-
-CFDataRef ACGetSHA256(CFDataRef data) {
-	CFDataRef final = NULL;
-	CFIndex length = ( data ? CFDataGetLength(data) : 0 );
-	
-	if ( length > 0 ) {
-		const char *plain = (char*)CFDataGetBytePtr(data);
-		unsigned char digest[CC_SHA256_DIGEST_LENGTH];
-		CC_SHA256(plain, length, digest);
-		final = CFDataCreate(kCFAllocatorDefault, digest, CC_SHA256_DIGEST_LENGTH);
-	}
-	
-	return final;
-}
-
-CFDataRef ACGetSHA384(CFDataRef data) {
-	CFDataRef final = NULL;
-	CFIndex length = ( data ? CFDataGetLength(data) : 0 );
-	
-	if ( length > 0 ) {
-		const char *plainptr = (char*)CFDataGetBytePtr(data);
-		unsigned char digest[CC_SHA384_DIGEST_LENGTH];
-		CC_SHA384(plainptr, length, digest);
-		
-		final = CFDataCreate(kCFAllocatorDefault, digest, CC_SHA384_DIGEST_LENGTH);
-	}
-	
-	return final;
-}
-
-CFDataRef ACGetSHA512(CFDataRef data) {
-	CFDataRef final = NULL;
-	CFIndex length = ( data ? CFDataGetLength(data) : 0 );
-	
-	if ( length > 0 ) {
-		const char *plainptr = (char*)CFDataGetBytePtr(data);
-		unsigned char digest[CC_SHA512_DIGEST_LENGTH];
-		CC_SHA512(plainptr, length, digest);
-		
-		final = CFDataCreate(kCFAllocatorDefault, digest, CC_SHA512_DIGEST_LENGTH);
-	}
-	
-	return final;
-}
 
 #pragma mark Signing
 
-CFDataRef ACHmac(CFDataRef data, CFStringRef key, ACHMACAlgorithm alg) {
+CFDataRef ACMHmac(CFDataRef data, CFStringRef key, ACHMACAlgorithm alg) {
 	CFIndex dataLength = ( data ? CFDataGetLength(data) : 0 );
 	CFIndex keyLength  = ( key ? CFStringGetLength(key) : 0 );
 	
@@ -429,16 +342,13 @@ CFDataRef ACHmac(CFDataRef data, CFStringRef key, ACHMACAlgorithm alg) {
 		
 		const char *keyptr = CFStringGetCStringPtr(key, kCFStringEncodingUTF8);
 		const char *dataptr = (char*)CFDataGetBytePtr(data);
-
-		// TODO (miked): this needs to be fixed
-		unsigned char chmac[digestLength];
-//		unsigned char *chmac = malloc(sizeof(unsigned char) * digestLength);
-//		memset(chmac, 0, sizeof(unsigned char) * digestLength);
-		
+		unsigned char *chmac = malloc(digestLength);
+        memset(chmac, 0, digestLength);
 		
 		CCHmac(alg, keyptr, keyLength, dataptr, dataLength, chmac);
-		
-		final = CFDataCreate(kCFAllocatorDefault, chmac, sizeof(chmac));
+        final = CFDataCreate(kCFAllocatorDefault, chmac, digestLength);
+        
+        free(chmac);
 	}
 	
 	return final;
