@@ -1,2 +1,3 @@
 language: objective-c
-script: xctool test -project ACMECrypt/ACMECrypt.xcodeproj -scheme AMCEAssymTests -sdk iphonesimulator
+xcode_project: ACMECrypt/ACMECrypt.xcodeproj
+xcode_scheme: AMCEAssymTests
