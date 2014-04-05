@@ -1,3 +1,5 @@
 language: objective-c
-xcode_project: ACMECrypt/ACMECrypt.xcodeproj
-xcode_scheme: AMCEAssymTests
+before_install:
+	- brew update
+	- brew instal xctool
+script: xctool -project ACMECrypt/ACMECryot.xcodeproj -scheme ACMEAssymTests
