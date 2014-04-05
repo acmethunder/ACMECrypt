@@ -6,18 +6,14 @@
 //
 //
 
-#include <CommonCrypto/CommonCrypto.h>
 #include "ACMECrypt.h"
 
 const char *kACMECryptChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 const char *kACryptHEXFormatUpper = "%02X";
 const char *kACCryptHEXFormatLower = "%02x";
 
-const int kACMECryptNumCryptChars = 62;
-
 #pragma mark -
-#pragma mark FREE STANDING C FUNCTIONS
-#pragma mark TO String
+#pragma mark To String
 
 CFStringRef ACMDataToHEX(CFDataRef data, bool upper) {
 	CFStringRef final = NULL;
@@ -55,9 +51,11 @@ CFStringRef ACMRandomString(uint32_t length) {
 	
 	CFMutableStringRef temp = CFStringCreateMutable(kCFAllocatorDefault, (CFIndex)length);
 	assert(temp);
+    
+    int numchars = strlen(kACMECryptChars);
 	
 	for ( uint32_t i = 0; i < length; ++i ) {
-		uint32_t rand = arc4random() % kACMECryptNumCryptChars;
+		uint32_t rand = arc4random() % numchars;
 		UniChar c = kACMECryptChars[rand];
 		CFStringAppendCharacters(temp, &c, 1);
 	}
@@ -100,115 +98,14 @@ SecKeyRef ACMGetPublicKeyX509(CFDataRef certData) {
 
 #pragma mark Symmetric Encryption / Decryption
 
-CFDataRef ACMEncryptAES256(CFDataRef data, CFStringRef key, CFStringRef initVector) {
-    CFDataRef final = NULL;
-	
-	CFIndex dataLength = ( data ? CFDataGetLength(data) : (CFIndex)0 );
-	CFIndex keyLength  = ( key ? CFStringGetLength(key) : (CFIndex)0 );
-	CFIndex ivLength   = ( initVector ? CFStringGetLength(initVector) : (CFIndex)0 );
-    
-    if ( (dataLength > 0) && (keyLength > 0) && (ivLength > 0) ) {
-		const char *ivptr = CFStringGetCStringPtr(initVector, kCFStringEncodingUTF8);
 
-		if ( ! ivptr ) {
-			return NULL;
-		}
-		
-        char keyptr[kCCKeySizeAES256 + 1];
-        memset(keyptr, 0, sizeof(keyptr));
-        
-		if ( ! CFStringGetCString(key, keyptr, kCCKeySizeAES256 + 1, kCFStringEncodingUTF8) ) {
-			return NULL;
-		}
-        
-        size_t buffersize = dataLength + kCCBlockSizeAES128;
-        size_t bytesencrypted = 0;
-        
-        void *cipherbuffer = malloc(buffersize);
-		const char *plainBuffer = (char*)CFDataGetBytePtr(data);
-        
-        CCCryptorStatus status = CCCrypt(
-                                         kCCEncrypt,
-                                         kCCAlgorithmAES128,
-                                         kCCOptionPKCS7Padding,
-                                         keyptr,
-                                         kCCKeySizeAES256,
-                                         ivptr,
-                                         plainBuffer,
-                                         dataLength,
-                                         cipherbuffer,
-                                         buffersize,
-                                         &bytesencrypted );
-        
-        if ( status == kCCSuccess ) {
-			final = CFDataCreate(kCFAllocatorDefault, cipherbuffer, bytesencrypted);
-        }
-        
-        free(cipherbuffer);
-    }
-    
-    
-    return final;
-}
-
-CFDataRef ACMDecryptAES256(CFDataRef data, CFStringRef key, CFStringRef initVector) {
-	CFDataRef final = 0;
-	
-	CFIndex dataLength = ( data ? CFDataGetLength(data) : 0 );
-	CFIndex keyLength  = ( key ? CFStringGetLength(key) : 0 );
-	CFIndex ivLength   = ( initVector ? CFStringGetLength(initVector) : 0 );
-	
-	if ( (dataLength > 0) && (keyLength > 0) && (ivLength > 0) ) {
-		const char *ivptr = CFStringGetCStringPtr(initVector, kCFStringEncodingUTF8);
-		
-		if ( ! ivptr ) {
-			return NULL;
-		}
-		
-		char keyPtr[kCCKeySizeAES256+1];	// 'key' should be 32 bytes for AES256, will be null-padded otherwise
-		memset(keyPtr, 0, sizeof(keyPtr));
-		
-		if ( ! CFStringGetCString(key, keyPtr, kCCKeySizeAES256+1, kCFStringEncodingUTF8) ) {
-			return NULL;
-		}
-		
-		//See the doc: For block ciphers, the output size will always be less than or
-		//equal to the input size plus the size of one block.
-		//That's why we need to add the size of one block here
-		size_t bufferSize = dataLength + kCCBlockSizeAES128;
-		void *buffer = malloc(bufferSize);
-		const void *cipher = CFDataGetBytePtr(data);
-		
-		size_t numBytesDecrypted = 0;
-		CCCryptorStatus cryptStatus = CCCrypt(
-											  kCCDecrypt,
-											  kCCAlgorithmAES128,
-											  kCCOptionPKCS7Padding,
-											  keyPtr,
-											  kCCKeySizeAES256,
-											  ivptr /* initialization vector (optional) */,
-											  cipher,
-											  dataLength, /* input */
-											  buffer,
-											  bufferSize, /* output */
-											  &numBytesDecrypted );
-		
-		if (cryptStatus == kCCSuccess) {
-			final = CFDataCreate(kCFAllocatorDefault, buffer, numBytesDecrypted);
-		}
-		
-		free(buffer); //free the buffer;
-	}
-	
-	return final;
-}
 
 #pragma mark Assymetric Encryption / Decryption
 
 CFDataRef ACMEncrypt(CFDataRef data, SecKeyRef publicKey) {
     CFDataRef final = 0;
 	
-	CFIndex dataLength = ( data ? CFDataGetLength(data) : (CFIndex)0 );
+	CFIndex dataLength = ( data ? CFDataGetLength(data) : 0 );
     
     if ( (dataLength > 0) || (publicKey) ) {
         size_t max = SecKeyGetBlockSize(publicKey);
