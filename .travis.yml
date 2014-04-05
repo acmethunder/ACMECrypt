@@ -1,2 +1,2 @@
 language: objective-c
-script: xctool test -project ACMECrypt/ACMECrypt.xcodeproj -scheme AMCEAssymTests -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO
+script: xctool test -project ACMECrypt/ACMECrypt.xcodeproj -scheme AMCEAssymTests -sdk iphonesimulator
