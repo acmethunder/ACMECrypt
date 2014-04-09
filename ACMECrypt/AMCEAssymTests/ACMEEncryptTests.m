@@ -195,16 +195,22 @@
 #pragma mark -
 #pragma mark Hashing
 
+-(void)testHashNilMD5 {
+	NSData *data = nil;
+	NSString *md5 = (__bridge NSString *)(ACMHash((__bridge CFDataRef)data,0));
+	XCTAssertNil(md5, @"" );
+}
+
 /*!
  *	@discussion
  *		Check hash generated via Terminal:
  *			> md5 ACMECrypt/AMCEAssymTests/sample_large_json.json
  */
--(void)testHashMD5 {
-	NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
+-(void)testGenericHash {
+    NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
 	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
 	
-	NSData *md5Data = (__bridge NSData*)ACGetMD5((__bridge CFDataRef)jsonData);
+	NSData *md5Data = (__bridge NSData*)ACMHash((__bridge CFDataRef)(jsonData), ACMHashAlgMD5);
 	NSString *md5String = (__bridge NSString*)ACMDataToHEX((__bridge CFDataRef)md5Data, true);
 	XCTAssertTrue( md5String.length == 32, @"" );
 	
@@ -212,22 +218,16 @@
 	XCTAssertTrue( [md5String isEqualToString:testMD5], @"" );
 }
 
--(void)testHashNilMD5 {
-	NSData *data = nil;
-	NSString *md5 = (__bridge NSString *)(ACGetMD5((__bridge CFDataRef)(data)));
-	XCTAssertNil(md5, @"" );
-}
-
 /*!
  *	@discussion
  *		Check hash generated via Terminal:
  *			> shasum ACMECrypt/AMCEAssymTests/sample_large_json.json
  */
--(void)testHashSHA1 {
-	NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
+-(void)testGenericHashSHA1 {
+    NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
 	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
 	
-	NSData *sha1Data = (__bridge NSData*)ACGetSHA1((__bridge CFDataRef)jsonData);
+	NSData *sha1Data = (__bridge NSData*)ACMHash((__bridge CFDataRef)(jsonData), ACMHashAlgSHA1);
 	XCTAssertTrue(sha1Data.length == CC_SHA1_DIGEST_LENGTH, @"" );
 	
 	NSString *sha1 = (__bridge NSString*)ACMDataToHEX((__bridge CFDataRef)sha1Data, true);
@@ -242,11 +242,11 @@
  *		check hash generated via Terminal:
  *			> shasum -a 224 ACMECrypt/AMCEAssymTests/sample_large_json.json
  */
--(void)testHashSHA224 {
-	NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
+-(void)testGenericHashSHA224 {
+    NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
 	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
 	
-	NSData *sha224Data = (__bridge NSData*)ACGetSHA224((__bridge CFDataRef)jsonData);
+	NSData *sha224Data = (__bridge NSData*)ACMHash((__bridge CFDataRef)(jsonData),ACMHashAlgSHA224);
 	XCTAssertTrue(sha224Data.length == CC_SHA224_DIGEST_LENGTH, @"" );
 	
 	NSString *sha224CHECK = [@"3a85e22d843b0783be27af38dcb145678523aa83b06b0d74444830e7" uppercaseString];
@@ -260,11 +260,11 @@
  *		check hash generated via Terminal:
  *			> shasum -a 256 ACMECrypt/AMCEAssymTests/sample_large_json.json
  */
--(void)testHashSHA256 {
-	NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
+-(void)testGenericHashSHA256 {
+    NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
 	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
 	
-	NSData *sha256Data = (__bridge NSData*)ACGetSHA256((__bridge CFDataRef)jsonData);
+	NSData *sha256Data = (__bridge NSData*)ACMHash((__bridge CFDataRef)jsonData, ACMHashAlgSHA256);
 	XCTAssertTrue( sha256Data.length > 1, @"" );
 	
 	NSString *sha256String = (__bridge NSString*)ACMDataToHEX((__bridge CFDataRef)sha256Data, true);
@@ -279,11 +279,11 @@
  *		check hash generated via Terminal:
  *			> shasum -a 384 ACMECrypt/AMCEAssymTests/sample_large_json.json
  */
--(void)testHashSHA384 {
-	NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
+-(void)testGenericHashSHA384 {
+   	NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
 	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
 	
-	NSData *sha384Data = (__bridge NSData*)ACGetSHA384((__bridge CFDataRef)jsonData);
+	NSData *sha384Data = (__bridge NSData*)ACMHash((__bridge CFDataRef)jsonData,ACMHashAlgSHA384);
 	XCTAssert(sha384Data.length == CC_SHA384_DIGEST_LENGTH, @"" );
 	
 	NSString *sha384String = (__bridge NSString*)ACMDataToHEX((__bridge CFDataRef)sha384Data, true);
@@ -298,11 +298,11 @@
  *		check hash generated via Terminal:
  *			> shasum -a 512 ACMECrypt/AMCEAssymTests/sample_large_json.json
  */
--(void)testHashSHA512 {
-	NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
+-(void)testGenericHashSHA512 {
+    NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
 	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
 	
-	NSData *sha512Data = (__bridge NSData*)ACGetSHA512((__bridge CFDataRef)jsonData);
+	NSData *sha512Data = (__bridge NSData*)ACMHash((__bridge CFDataRef)jsonData, ACMHashAlgSHA512);
 	XCTAssert(sha512Data.length == CC_SHA512_DIGEST_LENGTH, @"" );
 	
 	NSString *sha512String = (__bridge NSString*)ACMDataToHEX((__bridge CFDataRef)sha512Data, true);

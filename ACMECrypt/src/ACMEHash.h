@@ -11,7 +11,22 @@
 
 #include <CoreFoundation/CoreFoundation.h>
 
-/*
+/**
+ *  @enum
+ *      ACMHashAlg
+ *  @brief
+ *      Identifies hashing alforithm
+ */
+typedef enum {
+    ACMHashAlgMD5 = 0,
+    ACMHashAlgSHA1,
+    ACMHashAlgSHA224,
+    ACMHashAlgSHA256,
+    ACMHashAlgSHA384,
+    ACMHashAlgSHA512
+} ACMHashAlg;
+
+/**
  *	@function
  *		ECGetMD5
  *	@abstract
@@ -23,16 +38,30 @@
  *	@return
  *		CFDataRef, 'NULL' if an error occurs.
  */
-CFDataRef ACGetMD5(CFDataRef data);
+//CFDataRef ACGetMD5(CFDataRef data);
+//
+//CFDataRef ACGetSHA1(CFDataRef data);
+//
+//CFDataRef ACGetSHA224(CFDataRef data);
+//
+//CFDataRef ACGetSHA256(CFDataRef data);
+//
+//CFDataRef ACGetSHA384(CFDataRef data);
+//
+//CFDataRef ACGetSHA512(CFDataRef data);
 
-CFDataRef ACGetSHA1(CFDataRef data);
-
-CFDataRef ACGetSHA224(CFDataRef data);
-
-CFDataRef ACGetSHA256(CFDataRef data);
-
-CFDataRef ACGetSHA384(CFDataRef data);
-
-CFDataRef ACGetSHA512(CFDataRef data);
+/**
+ *  @function
+ *      ACMHash
+ *  @brief
+ *      Calculates the hash of the given data, based on the algorithm provided. Defaults to MD5.
+ *  @param
+ *      CFDataRef, data object for which to calculate hash.
+ *  @param
+ *      ACMHashAlg, hashng algorithm.
+ *  @return
+ *      CFDataRef, NULL if an error occurs.
+ */
+CFDataRef ACMHash(CFDataRef, ACMHashAlg);
 
 #endif

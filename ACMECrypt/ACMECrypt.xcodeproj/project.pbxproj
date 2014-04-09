@@ -13,6 +13,9 @@
 		51B8BA4718EF96C20003A4E9 /* ACMEHash.c in Sources */ = {isa = PBXBuildFile; fileRef = 51B8BA4618EF96C20003A4E9 /* ACMEHash.c */; };
 		51B8BA4818EF96C20003A4E9 /* ACMEHash.c in Sources */ = {isa = PBXBuildFile; fileRef = 51B8BA4618EF96C20003A4E9 /* ACMEHash.c */; };
 		51B8BA4918EF96C20003A4E9 /* ACMEHash.c in Sources */ = {isa = PBXBuildFile; fileRef = 51B8BA4618EF96C20003A4E9 /* ACMEHash.c */; };
+		51B8BA4D18EFA76C0003A4E9 /* ACMESymmetric.c in Sources */ = {isa = PBXBuildFile; fileRef = 51B8BA4C18EFA76C0003A4E9 /* ACMESymmetric.c */; };
+		51B8BA4E18EFA76C0003A4E9 /* ACMESymmetric.c in Sources */ = {isa = PBXBuildFile; fileRef = 51B8BA4C18EFA76C0003A4E9 /* ACMESymmetric.c */; };
+		51B8BA4F18EFA76C0003A4E9 /* ACMESymmetric.c in Sources */ = {isa = PBXBuildFile; fileRef = 51B8BA4C18EFA76C0003A4E9 /* ACMESymmetric.c */; };
 		51C46CE818B7066B00E672C5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51E2B63617F3C2DA00E382D0 /* Foundation.framework */; };
 		51C46CEA18B7066B00E672C5 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51C46CE918B7066B00E672C5 /* CoreGraphics.framework */; };
 		51C46CEB18B7066B00E672C5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51E2B63817F3C2DA00E382D0 /* UIKit.framework */; };
@@ -54,6 +57,8 @@
 		5151358717F51AE9007CF5A6 /* rsa_public_key.der */ = {isa = PBXFileReference; lastKnownFileType = file; path = rsa_public_key.der; sourceTree = "<group>"; };
 		51B8BA4618EF96C20003A4E9 /* ACMEHash.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ACMEHash.c; sourceTree = "<group>"; };
 		51B8BA4A18EF96D30003A4E9 /* ACMEHash.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ACMEHash.h; sourceTree = "<group>"; };
+		51B8BA4B18EFA7590003A4E9 /* ACMESymmetric.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ACMESymmetric.h; sourceTree = "<group>"; };
+		51B8BA4C18EFA76C0003A4E9 /* ACMESymmetric.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ACMESymmetric.c; sourceTree = "<group>"; };
 		51C46CE718B7066A00E672C5 /* ACMECrypt Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ACMECrypt Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		51C46CE918B7066B00E672C5 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		51C46CEE18B7066B00E672C5 /* ACMECrypt Demo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ACMECrypt Demo-Info.plist"; sourceTree = "<group>"; };
@@ -181,6 +186,8 @@
 				51148DDA182D577F00E61925 /* ACMEEncode.h */,
 				51B8BA4618EF96C20003A4E9 /* ACMEHash.c */,
 				51B8BA4A18EF96D30003A4E9 /* ACMEHash.h */,
+				51B8BA4B18EFA7590003A4E9 /* ACMESymmetric.h */,
+				51B8BA4C18EFA76C0003A4E9 /* ACMESymmetric.c */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -290,11 +297,6 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0510;
-				TargetAttributes = {
-					51C46D0318B7066B00E672C5 = {
-						TestTargetID = 51C46CE618B7066A00E672C5;
-					};
-				};
 			};
 			buildConfigurationList = 51E2B62717F3C19000E382D0 /* Build configuration list for PBXProject "ACMECrypt" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -354,6 +356,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				51C46D1818B7068600E672C5 /* ACMECrypt.c in Sources */,
+				51B8BA4E18EFA76C0003A4E9 /* ACMESymmetric.c in Sources */,
 				51B8BA4818EF96C20003A4E9 /* ACMEHash.c in Sources */,
 				51C46CFD18B7066B00E672C5 /* ViewController.m in Sources */,
 				51C46CF718B7066B00E672C5 /* AppDelegate.m in Sources */,
@@ -366,6 +369,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				51C46D1118B7066B00E672C5 /* ACMECrypt_DemoTests.m in Sources */,
+				51B8BA4F18EFA76C0003A4E9 /* ACMESymmetric.c in Sources */,
 				51B8BA4918EF96C20003A4E9 /* ACMEHash.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -374,6 +378,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				51B8BA4D18EFA76C0003A4E9 /* ACMESymmetric.c in Sources */,
 				51148DD9182D576B00E61925 /* ACMEEncode.c in Sources */,
 				51B8BA4718EF96C20003A4E9 /* ACMEHash.c in Sources */,
 				51E2B64617F3C52600E382D0 /* ACMECrypt.c in Sources */,
@@ -527,7 +532,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/ACMECrypt Demo.app/ACMECrypt Demo";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -567,7 +571,6 @@
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
-				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
 			};
 			name = Debug;
@@ -576,7 +579,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/ACMECrypt Demo.app/ACMECrypt Demo";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -609,7 +611,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
-				TEST_HOST = "$(BUNDLE_LOADER)";
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = xctest;
 			};
