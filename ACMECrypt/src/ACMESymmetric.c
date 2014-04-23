@@ -104,3 +104,45 @@ CFDataRef ACMDecryptAES256(CFDataRef data, CFStringRef key, CFStringRef initVect
 	
 	return final;
 }
+
+CFDataRef ACMSymmCrypt(CFDataRef data,CFStringRef key, CFStringRef initVector, ACMCryptInfo info) {
+    CFDataRef final = NULL;
+    
+//    CFIndex dataLength = ( data ? CFDataGetLength(data) : 0 );
+//	CFIndex keyLength  = ( key ? CFStringGetLength(key) : 0 );
+//	CFIndex ivLength   = ( initVector ? CFStringGetLength(initVector) : 0 );
+//    
+//    if ( (dataLength > 0) && (keyLength > 0) ) {
+//        const char *ivptr = ( ivLength > 0 ? CFStringGetCStringPtr(initVector, kCFStringEncodingUTF8) : NULL );
+//        CCAlgorithm alg = info.alg;
+//        CCOptions padding = info.padding;
+//        
+//        size_t key_size;
+//        
+//        switch (alg) {
+//            case kCCAlgorithmAES128:
+//                key_size = kCCKeySizeAES128;
+//                break;
+//                
+//            default:
+//                key_size = 0;
+//                break;
+//        }
+//        
+//        char *keyptr = malloc(key_size);
+//        memset(keyptr, 0, key_size);
+//        
+//        if ( CFStringGetCString(key, keyptr, (CFIndex)key_size, kCFStringEncodingUTF8) ) {
+//            
+//        }
+//    }
+    
+    
+    
+    return final;
+}
+
+inline ACMCryptInfo ACMCryptInfoMake( CCAlgorithm alg, CCOptions options) {
+    return (ACMCryptInfo){ .alg = alg, .options = options };
+
+}

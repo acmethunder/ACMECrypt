@@ -12,6 +12,16 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <CommonCrypto/CommonCrypto.h>
 
+//typedef enum {
+//    ACM
+//}ACMSymmCryptAlg;
+
+
+typedef struct {
+    CCAlgorithm alg;
+    CCOptions options;
+}ACMCryptInfo;
+
 /*!
  *	@function
  *		ACMEncryptAES256
@@ -50,6 +60,10 @@ CFDataRef ACMEncryptAES256(CFDataRef data, CFStringRef key, CFStringRef initVect
  *		CFDataRef, decrypted data, 'NULL' if an error occurs.
  */
 CFDataRef ACMDecryptAES256(CFDataRef data, CFStringRef key, CFStringRef initVector);
+
+CFDataRef ACMSymmCrypt(CFDataRef data,CFStringRef key, CFStringRef initVector, ACMCryptInfo info);
+
+inline ACMCryptInfo ACMCryptInfoMake( CCAlgorithm alg, CCOptions options);
 
 
 
