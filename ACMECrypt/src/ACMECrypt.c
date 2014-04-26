@@ -52,7 +52,7 @@ CFStringRef ACMRandomString(uint32_t length) {
 	CFMutableStringRef temp = CFStringCreateMutable(kCFAllocatorDefault, (CFIndex)length);
 	assert(temp);
     
-    int numchars = strlen(kACMECryptChars);
+    int numchars = (int)strlen(kACMECryptChars);
 	
 	for ( uint32_t i = 0; i < length; ++i ) {
 		uint32_t rand = arc4random() % numchars;
@@ -116,7 +116,7 @@ CFDataRef ACMEncrypt(CFDataRef data, SecKeyRef publicKey) {
 		CFMutableDataRef temp = CFDataCreateMutable(kCFAllocatorDefault, cipherBufferSize * dataLength);
 		assert(temp);
 		
-		uint32_t maxlength = dataLength;
+		uint32_t maxlength = (uint32_t)dataLength;
         
         for ( size_t block = 0; (block * inputBlocSize) < maxlength; ++block ) {
             size_t blockoffset = block * inputBlocSize;
@@ -126,13 +126,19 @@ CFDataRef ACMEncrypt(CFDataRef data, SecKeyRef publicKey) {
             
             size_t actualSize = cipherBufferSize;
             
-            OSStatus status = SecKeyEncrypt(publicKey, kSecPaddingPKCS1, chunk, subsize, cipherBuffer, &actualSize);
+            OSStatus status = SecKeyEncrypt(
+                                            publicKey,
+                                            kSecPaddingPKCS1,
+                                            chunk,
+                                            subsize,
+                                            cipherBuffer,
+                                            &actualSize );
             
             if ( status == errSecSuccess ) {
 				CFDataAppendBytes(temp, cipherBuffer, actualSize);
             }
             else {
-                printf( "Unable to encrypt data. Status: %ld", status);
+                printf( "Unable to encrypt data. Status: %ld", (signed long)status);
 				CFRelease(temp);
                 temp = NULL;
                 break;
@@ -156,13 +162,13 @@ CFDataRef ACMDecryptWithKey(CFDataRef data, SecKeyRef key) {
 	CFIndex dataLength = ( data ? CFDataGetLength(data) : 0 );
 	
     if ( (dataLength > 0) && key ) {
-		size_t max = SecKeyGetBlockSize(key);
-        size_t cipherBufferSize = max;
-        const uint8_t *fullthing = CFDataGetBytePtr(data);
+		size_t max                 = SecKeyGetBlockSize(key);
+        size_t cipherBufferSize    = max;
+        const uint8_t *fullthing   = CFDataGetBytePtr(data);
         const size_t inputBlocSize = cipherBufferSize;
-        uint8_t *cipherBuffer = malloc(cipherBufferSize);
-        uint32_t maxlength = dataLength;
-		CFMutableDataRef temp = CFDataCreateMutable(kCFAllocatorDefault, dataLength);
+        uint8_t *cipherBuffer      = malloc(cipherBufferSize);
+        uint32_t maxlength         = (uint32_t)dataLength;
+		CFMutableDataRef temp      = CFDataCreateMutable(kCFAllocatorDefault, dataLength);
         
         for ( size_t block = 0; block * inputBlocSize < maxlength; ++block ) {
             size_t blockoffset = block * inputBlocSize;
@@ -184,7 +190,7 @@ CFDataRef ACMDecryptWithKey(CFDataRef data, SecKeyRef key) {
 				CFDataAppendBytes(temp, cipherBuffer, actualSize);
             }
             else {
-                printf("Unable to encrypt data. Status: %ld", status);
+                printf("Unable to encrypt data. Status: %ld", (signed long)status);
 				CFRelease(temp);
                 temp = NULL;
                 break;
