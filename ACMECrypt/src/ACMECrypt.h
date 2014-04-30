@@ -13,6 +13,7 @@
 #include <Security/Security.h>
 #include <CommonCrypto/CommonCrypto.h>
 
+#include "ACMEStrings.h"
 #include "ACMEHash.h"
 #include "ACMESymmetric.h"
 
@@ -30,21 +31,6 @@ typedef enum uint32_t {
 
 #pragma mark -
 #pragma mark FREE STANDING C FUNCTIONS
-#pragma mark TO String
-
-/*!
- *	@function
- *		ACMDataToHEX
- *	@abstract
- *		Returns a string containing the uppercase hexits of the provided CFDataRef item.
- *	@param
- *		data (CFDataRef)
- *	@param
- *		upper (bool), pass 'true' if the return value should be in uppercase, 'false' for lowercase.
- *	@return
- *		CFStringRef, 'NULL' if an error occurs.
- */
-CFStringRef ACMDataToHEX(CFDataRef data, bool upper);
 
 #pragma mark Randon String Generator
 

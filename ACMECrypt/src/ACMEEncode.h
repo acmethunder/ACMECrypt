@@ -10,17 +10,19 @@
 #define ACMECrypt_ACMEEncode_h
 
 #include <CoreFoundation/CoreFoundation.h>
+#include <Security/Security.h>
 
 #pragma mark -
 #pragma mark Base 64 Encoding
 
-CFStringRef ACBase64Encode(CFDataRef data);
-CFStringRef ACBase64EncodeString(CFStringRef text);
+CFStringRef ACMEBase64Encode(CFDataRef data);
+CFStringRef ACMEBase64EncodeString(CFStringRef text);
 
 #pragma mark -
 #pragma mark Base 64 Decoding
 
-CFDataRef ACBase64Decode(CFStringRef base64String);
+//CFDataRef ACMEBase64DecodeString(CFStringRef base64String);
+CFStringRef ACMEBase64Decode(CFDataRef data);
 
 
 

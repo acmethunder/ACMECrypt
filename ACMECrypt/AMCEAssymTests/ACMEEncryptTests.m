@@ -10,6 +10,7 @@
 
 #import "ACMECrypt.h"
 #import "ACMEEncode.h"
+#import "ACMEHelpers.h"
 
 @interface ACMEEncryptTests : XCTestCase
 
@@ -193,7 +194,11 @@
 }
 
 #pragma mark -
-#pragma mark Hashing
+#pragma mark HASHING
+#pragma mark -
+#pragma mark MD5
+
+static NSString * const kTestMD5 = @"858be8b0c08700867c623d1960165ddd";
 
 -(void)testHashNilMD5 {
 	NSData *data = nil;
@@ -214,9 +219,35 @@
 	NSString *md5String = (__bridge NSString*)ACMDataToHEX((__bridge CFDataRef)md5Data, true);
 	XCTAssertTrue( md5String.length == 32, @"" );
 	
-	NSString *testMD5 = [@"858be8b0c08700867c623d1960165ddd" uppercaseString];
+	NSString *testMD5 = [kTestMD5 uppercaseString];
 	XCTAssertTrue( [md5String isEqualToString:testMD5], @"" );
 }
+
+- (void)testMD5OnNSData {
+    NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
+	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
+    XCTAssertNotNil( jsonData, @"" );
+    
+    NSString *json_md5 = [jsonData acm_md5Hash];
+    XCTAssertTrue(
+                  [json_md5 isKindOfClass:[NSString class]],
+                  @"Is actually instance of \'%@.\'",
+                  NSStringFromClass([json_md5 class]) );
+    NSString *testMD5 = kTestMD5;
+    XCTAssertEqualObjects( json_md5, testMD5, @"Should logically equal strings." );
+}
+
+//-(void)testMD5OnNSString {
+//    NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
+//	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
+//    
+//    NSString *json_string = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+//    NSString *md5String = [json_string acm_md5Hash];
+//    
+//    
+//}
+
+#pragma mark SHA1
 
 /*!
  *	@discussion
@@ -365,13 +396,13 @@
 #pragma mark -
 #pragma mark Base 64 Encoding
 
--(void)testBase64EncodeData {
-	NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
-	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
-	XCTAssertNotNil( jsonData, @"" );
-	
-	NSString *base64String = CFBridgingRelease(ACBase64Encode((__bridge CFDataRef)(jsonData)));
-	XCTAssertFalse( base64String, @"" );
-}
+//-(void)testBase64EncodeData {
+//	NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
+//	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
+//	XCTAssertNotNil( jsonData, @"" );
+//	
+//	NSString *base64String = CFBridgingRelease(ACBase64Encode((__bridge CFDataRef)(jsonData)));
+//	XCTAssertFalse( base64String, @"" );
+//}
 
 @end
