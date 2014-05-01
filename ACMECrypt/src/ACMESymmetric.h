@@ -12,6 +12,8 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <CommonCrypto/CommonCrypto.h>
 
+CF_EXTERN_C_BEGIN
+
 //typedef enum {
 //    ACM
 //}ACMSymmCryptAlg;
@@ -65,6 +67,6 @@ CFDataRef ACMSymmCrypt(CFDataRef data,CFStringRef key, CFStringRef initVector, A
 
 inline ACMCryptInfo ACMCryptInfoMake( CCAlgorithm alg, CCOptions options);
 
-
+CF_EXTERN_C_END
 
 #endif

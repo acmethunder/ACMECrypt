@@ -17,6 +17,8 @@
 #include "ACMEHash.h"
 #include "ACMESymmetric.h"
 
+CF_EXTERN_C_BEGIN
+
 #pragma mark -
 #pragma mark DATA TYPES
 
@@ -104,5 +106,7 @@ CFDataRef ACMDecryptWithKey(CFDataRef data, SecKeyRef key);
 #pragma mark Signing
 
 CFDataRef ACMHmac(CFDataRef data, CFStringRef key, ACHMACAlgorithm alg);
+
+CF_EXTERN_C_END
 
 #endif

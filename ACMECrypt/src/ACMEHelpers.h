@@ -53,26 +53,43 @@
  */
 @interface NSData (ACMEHash)
 
+/**
+ *  @method
+ *      acm_hash:
+ *  @brief
+ *      Calaculates hash of the receiver using the provided algorithm.
+ *  @param
+ *      alg (ACMHashAlg), identifies hashing algorithm to use. See 'ACMEHash.h' for accepted algorithms.
+ *  @return
+ *      NSString*, lowercase, 'nil' if an error occurs, or the value of 'alg falss outside the accepted
+ *      values.
+ *  @see
+ *      ACMEHash.h
+ */
 -(NSString*)acm_hash:(ACMHashAlg)alg;
 
 /**
- *  @method
- *      acm_md5
- *  @brief
- *      Calculates and returns the MD5 hash of the receiver.
- *  @return
- *      (NSString*) MD5 hash of the receiver, 'nil' if an error occurs.
+ *  @discussion
+ *      The following methods are simply convenience methods, which call through to '-[NSData(ACMEHash) acm_hash:]'
+ *      with the appropriate algorithm.
  */
+
+/** @method acm_md5 */
 -(NSString*) acm_md5Hash;
 
+/** @method acm_sha1 */
 -(NSString*)acm_sha1;
 
+/** @method acm_sha224 */
 -(NSString*)acm_sha224;
 
+/** @method acm_sha256 */
 -(NSString*)acm_sha256;
 
+/** @method acm_sha384 */
 -(NSString*)acm_sha384;
 
+/** @method acm_sha512 */
 -(NSString*)acm_sha512;
 
 @end

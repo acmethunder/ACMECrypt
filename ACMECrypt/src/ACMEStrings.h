@@ -11,6 +11,8 @@
 
 #include <CoreFoundation/CoreFoundation.h>
 
+CF_EXTERN_C_BEGIN
+
 /*!
  *	@function
  *		ACMDataToHEX
@@ -25,5 +27,6 @@
  */
 CFStringRef ACMDataToHEX(CFDataRef data, bool upper);
 
+CF_EXTERN_C_END
 
 #endif

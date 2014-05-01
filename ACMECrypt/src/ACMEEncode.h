@@ -12,6 +12,8 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <Security/Security.h>
 
+CF_EXTERN_C_BEGIN
+
 #pragma mark -
 #pragma mark Base 64 Encoding
 
@@ -25,6 +27,6 @@ CFStringRef ACMEBase64EncodeString(CFStringRef text);
 CFStringRef ACMEBase64Decode(CFDataRef data);
 
 
-
+CF_EXTERN_C_END
 
 #endif

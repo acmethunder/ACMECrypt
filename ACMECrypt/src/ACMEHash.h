@@ -11,6 +11,8 @@
 
 #include <CoreFoundation/CoreFoundation.h>
 
+CF_EXTERN_C_BEGIN
+
 /**
  *  @enum
  *      ACMHashAlg
@@ -39,5 +41,7 @@ typedef enum {
  *      CFDataRef, NULL if an error occurs.
  */
 CFDataRef ACMHash(CFDataRef, ACMHashAlg);
+
+CF_EXTERN_C_END
 
 #endif
