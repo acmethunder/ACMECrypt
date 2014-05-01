@@ -40,7 +40,7 @@ CFDataRef ACMHash(CFDataRef data, ACMHashAlg alg) {
                 break;
             case ACMHashAlgMD5:
             default:
-                digestLength = CC_MD2_DIGEST_LENGTH;
+                digestLength = CC_MD5_DIGEST_LENGTH;
                 hashFunc = CC_MD5;
                 break;
         }

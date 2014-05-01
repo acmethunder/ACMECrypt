@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name             = "ACMECrypt"
   s.version          = "0.0.1"
-  s.summary          = "Some convenince methods for hashing, signing, and ecryption."
+  s.summary          = "Some convenince methods for hashing data."
   s.homepage         = "https://github.com/mdewolfe/ACMECrypt"
   s.license          = "MIT"
   s.license          = { :type => "MIT", :file => "LICENSE" }
@@ -25,11 +25,13 @@ Pod::Spec.new do |s|
   end
   
   s.subspec 'ACMEHash' do |ss|
+  	ss.source_files = 'ACMECrypt/src/ACMEHelpers.{h,m}'
+  	ss.requires_arc = true
   	ss.dependency 'ACMEHashCore'
   end
   
   
-  s.dependency 'ACMEHash'
+  #s.dependency 'ACMEHash'
 
 end
 

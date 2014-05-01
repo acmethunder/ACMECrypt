@@ -196,6 +196,17 @@
 #pragma mark -
 #pragma mark HASHING
 #pragma mark -
+
+#pragma mark Nil Tests
+
+-(void)testNilHash {
+    NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
+	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
+    
+    XCTAssertNil( [jsonData acm_hash:ACMHashAlgMD5 - 1], @"Should be \'nil.\'" );
+    XCTAssertNil( [jsonData acm_hash:ACMHashAlgSHA512 + 1], @"Should be \'nil.\'" );
+}
+
 #pragma mark MD5
 
 static NSString * const kTestMD5 = @"858be8b0c08700867c623d1960165ddd";
@@ -237,17 +248,19 @@ static NSString * const kTestMD5 = @"858be8b0c08700867c623d1960165ddd";
     XCTAssertEqualObjects( json_md5, testMD5, @"Should logically equal strings." );
 }
 
-//-(void)testMD5OnNSString {
-//    NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
-//	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
-//    
-//    NSString *json_string = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-//    NSString *md5String = [json_string acm_md5Hash];
-//    
-//    
-//}
+-(void)testMD5OnNSString {
+    NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
+	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
+    
+    NSString *json_string = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    NSString *md5String = [json_string acm_md5Hash];
+    XCTAssertEqualObjects(md5String, kTestMD5, @"" );
+    
+}
 
 #pragma mark SHA1
+
+static NSString * const kSHA1Check = @"4304534fbae6f879ab91ea5096aa728a9efd6481";
 
 /*!
  *	@discussion
@@ -264,9 +277,21 @@ static NSString * const kTestMD5 = @"858be8b0c08700867c623d1960165ddd";
 	NSString *sha1 = (__bridge NSString*)ACMDataToHEX((__bridge CFDataRef)sha1Data, true);
 	XCTAssertTrue( sha1.length == (CC_SHA1_DIGEST_LENGTH * 2), @"" );
 	
-	NSString *sha1CHECK = [@"4304534fbae6f879ab91ea5096aa728a9efd6481" uppercaseString];
+	NSString *sha1CHECK = [kSHA1Check uppercaseString];
 	XCTAssertEqualObjects(sha1, sha1CHECK, @"" );
 }
+
+-(void)testSHA1OnNSData {
+    NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
+	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
+    
+    NSString *sha1String = [jsonData acm_sha1];
+    XCTAssertEqualObjects( sha1String, kSHA1Check, @"SHould be logically equal." );
+}
+
+#pragma mark SHA224
+
+static NSString * const kSha224Check = @"3a85e22d843b0783be27af38dcb145678523aa83b06b0d74444830e7";
 
 /*!
  *	@discussion
@@ -280,11 +305,23 @@ static NSString * const kTestMD5 = @"858be8b0c08700867c623d1960165ddd";
 	NSData *sha224Data = (__bridge NSData*)ACMHash((__bridge CFDataRef)(jsonData),ACMHashAlgSHA224);
 	XCTAssertTrue(sha224Data.length == CC_SHA224_DIGEST_LENGTH, @"" );
 	
-	NSString *sha224CHECK = [@"3a85e22d843b0783be27af38dcb145678523aa83b06b0d74444830e7" uppercaseString];
+	NSString *sha224CHECK = [kSha224Check uppercaseString];
 	NSString *sha224String = (__bridge NSString*)ACMDataToHEX((__bridge CFDataRef)sha224Data, true);
 	XCTAssertEqualWithAccuracy(sha224String.length, (NSUInteger)(CC_SHA224_DIGEST_LENGTH*2), 0, @"" );
 	XCTAssertEqualObjects(sha224String, sha224CHECK, @"" );
 }
+
+-(void)testSHA224OnNSData {
+    NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
+	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
+    
+    NSString *sha224String = [jsonData acm_sha224];
+    XCTAssertEqualObjects( sha224String, kSha224Check, @"Should be logically equal." );
+}
+
+#pragma mark SHA256
+
+static NSString * const kSHA256Check = @"5d572efc2336007b483c85957c75006de76d265e5ecb03d2c01f91952b79fef4";
 
 /*!
  *	@discussion
@@ -301,9 +338,21 @@ static NSString * const kTestMD5 = @"858be8b0c08700867c623d1960165ddd";
 	NSString *sha256String = (__bridge NSString*)ACMDataToHEX((__bridge CFDataRef)sha256Data, true);
 	XCTAssertEqualWithAccuracy( sha256String.length, (NSUInteger)(CC_SHA256_DIGEST_LENGTH * 2), 0, @"" );
 	
-	NSString *sha256CHECK = [@"5d572efc2336007b483c85957c75006de76d265e5ecb03d2c01f91952b79fef4" uppercaseString];
+	NSString *sha256CHECK = [kSHA256Check uppercaseString];
 	XCTAssertEqualObjects(  sha256String, sha256CHECK, @"" );
 }
+
+-(void)testSHA256OnNSData {
+    NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
+	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
+    
+    NSString *sha256String = [jsonData acm_sha256];
+    XCTAssertEqualObjects( sha256String, kSHA256Check, @"" );
+}
+
+#pragma mark SAH384
+
+static NSString * const kSHA384Check = @"40b408ebbb3fa57855e1e43978aaea8906cd23dc6d9add183346929b014d6ae2d124cdcd3c91ff5164aa76b86c7dbf27";
 
 /*!
  *	@discussion
@@ -320,9 +369,21 @@ static NSString * const kTestMD5 = @"858be8b0c08700867c623d1960165ddd";
 	NSString *sha384String = (__bridge NSString*)ACMDataToHEX((__bridge CFDataRef)sha384Data, true);
 	XCTAssertEqualWithAccuracy(sha384String.length, (NSUInteger)(CC_SHA384_DIGEST_LENGTH * 2), 0, @"" );
 	
-	NSString *sha384CHECK = [@"40b408ebbb3fa57855e1e43978aaea8906cd23dc6d9add183346929b014d6ae2d124cdcd3c91ff5164aa76b86c7dbf27" uppercaseString];
+	NSString *sha384CHECK = [kSHA384Check uppercaseString];
 	XCTAssertEqualObjects(sha384String, sha384CHECK, @"" );
 }
+
+-(void)testSHA384OnNSData {
+    NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
+	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
+    
+    NSString *sha384String = [jsonData acm_sha384];
+    XCTAssertEqualObjects( sha384String, kSHA384Check, @"" );
+}
+
+#pragma mark SHA512
+
+static NSString * const kSHA512Check = @"f3e2cde42d3a094b37b296346795c1df8b04172bd4f4ae73161428bcf836a66171fa702468a871b9352f562e61369a6b30a804290c1526ea36d4fec3aa073e04";
 
 /*!
  *	@discussion
@@ -339,8 +400,16 @@ static NSString * const kTestMD5 = @"858be8b0c08700867c623d1960165ddd";
 	NSString *sha512String = (__bridge NSString*)ACMDataToHEX((__bridge CFDataRef)sha512Data, true);
 	XCTAssertEqualWithAccuracy(sha512String.length, (NSUInteger)(CC_SHA512_DIGEST_LENGTH * 2), 0, @"" );
 	
-	NSString *sha512CHECK = [@"f3e2cde42d3a094b37b296346795c1df8b04172bd4f4ae73161428bcf836a66171fa702468a871b9352f562e61369a6b30a804290c1526ea36d4fec3aa073e04" uppercaseString];
+	NSString *sha512CHECK = [kSHA512Check uppercaseString];
 	XCTAssertEqualObjects(sha512String, sha512CHECK, @"" );
+}
+
+-(void)testSHA512OnNSData {
+    NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
+	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
+    
+    NSString *sha512String = [jsonData acm_sha512];
+    XCTAssertEqualObjects( sha512String, kSHA512Check, @"" );
 }
 
 #pragma mark -
