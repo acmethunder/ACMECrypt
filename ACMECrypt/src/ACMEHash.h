@@ -29,6 +29,16 @@ typedef enum {
     ACMHashAlgSHA512
 } ACMHashAlg;
 
+/**
+ *  @function
+ *      acm_hash_valid_algorithm
+ *  @brief
+ *      Validates that 'alg' is listed in 'ACMEHashAlg.'
+ *  @param
+ *      alg (ACMHashAlg), algorithm to validate.
+ *  @return
+ *      'true' if 'alg' is listed in 'ACMEHashAlg,' 'false' otherwise.
+ */
 bool acm_hash_valid_algorithm(ACMHashAlg alg);
 
 /**

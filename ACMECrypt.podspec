@@ -25,7 +25,7 @@ Pod::Spec.new do |s|
   end
   
   s.subspec 'ACMEHash' do |ss|
-  	ss.source_files = 'ACMECrypt/src/ACMEHelpers.{h,m}'
+  	ss.source_files = 'ACMECrypt/src/ACMEAdditions.{h,m}'
   	ss.requires_arc = true
   	ss.dependency 'ACMECrypt/ACMEHashCore'
   end

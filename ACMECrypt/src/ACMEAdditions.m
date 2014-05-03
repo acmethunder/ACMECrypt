@@ -62,11 +62,11 @@ BOOL acm_valid_encoding(NSStringEncoding enc) {
 
 #pragma mark MD5
 
-- (NSString*) acm_md5Hash {
-    return [self acm_md5HashWithEncoding:NSUTF8StringEncoding];
+- (NSString*) acm_md5 {
+    return [self acm_md5WithEncoding:NSUTF8StringEncoding];
 }
 
-- (NSString*) acm_md5HashWithEncoding:(NSStringEncoding)encoding {
+- (NSString*) acm_md5WithEncoding:(NSStringEncoding)encoding {
     return [self acm_hash:ACMHashAlgMD5 encoding:encoding];
 }
 
@@ -79,10 +79,10 @@ BOOL acm_valid_encoding(NSStringEncoding enc) {
 }
 
 - (NSString*) acm_sha224 {
-    return [self acm_sha224:NSUTF8StringEncoding];
+    return [self acm_sha224WithEncoding:NSUTF8StringEncoding];
 }
 
-- (NSString*) acm_sha224:(NSStringEncoding)encoding {
+- (NSString*) acm_sha224WithEncoding:(NSStringEncoding)encoding {
     return [self acm_hash:ACMHashAlgSHA224 encoding:encoding];
 }
 
@@ -131,7 +131,7 @@ BOOL acm_valid_encoding(NSStringEncoding enc) {
 
 #pragma mark MD5
 
-- (NSString*) acm_md5Hash {
+- (NSString*) acm_md5 {
     return [self acm_hash:ACMHashAlgMD5];
 }
 

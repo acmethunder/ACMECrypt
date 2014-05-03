@@ -239,7 +239,7 @@ static NSString * const kTestMD5 = @"858be8b0c08700867c623d1960165ddd";
 	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
     XCTAssertNotNil( jsonData, @"" );
     
-    NSString *json_md5 = [jsonData acm_md5Hash];
+    NSString *json_md5 = [jsonData acm_md5];
     XCTAssertTrue(
                   [json_md5 isKindOfClass:[NSString class]],
                   @"Is actually instance of \'%@.\'",
@@ -253,9 +253,8 @@ static NSString * const kTestMD5 = @"858be8b0c08700867c623d1960165ddd";
 	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
     
     NSString *json_string = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-    NSString *md5String = [json_string acm_md5Hash];
+    NSString *md5String = [json_string acm_md5];
     XCTAssertEqualObjects(md5String, kTestMD5, @"" );
-    
 }
 
 /**
@@ -271,7 +270,7 @@ static NSString * const kTwtrSignatureBaseString = @"POST&https%3A%2F%2Fapi.twit
 static NSString * const kTwtrMD5 = @"00ab4d53dbe9900a3ac2a61201be5290";
 
 -(void)testMD5TwitterExample {
-    NSString *twtrMD5 = [kTwtrSignatureBaseString acm_md5Hash];
+    NSString *twtrMD5 = [kTwtrSignatureBaseString acm_md5];
     XCTAssertEqualObjects( kTwtrMD5, twtrMD5, @"" );
 }
 
