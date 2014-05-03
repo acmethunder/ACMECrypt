@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/mdewolfe/ACMECrypt.svg?branch=develop)](https://travis-ci.org/mdewolfe/ACMECrypt)
+[![Build Status](https://travis-ci.org/mdewolfe/ACMECrypt.svg?branch=master)](https://travis-ci.org/mdewolfe/ACMECrypt)
 
 # ACMECrypt Readme
 
