@@ -10,12 +10,20 @@
 
 #include "ACMEHash.h"
 
+CF_EXTERN_C_BEGIN
+
+BOOL acm_valid_encoding(NSStringEncoding enc);
+
+CF_EXTERN_C_END
+
 #pragma mark -
 #pragma mark NSString+ACMEHash
 
 @interface NSString (ACMEHash)
 
 #pragma mark MD5
+
+- (NSString*) acm_hash:(ACMHashAlg)alg encoding:(NSStringEncoding)encoding;
 
 /**
  *  @method
@@ -26,19 +34,36 @@
  *  @return
  *      (NSString*), MD5 of the receiver, 'nil' if an error occurs.
  */
--(NSString*) acm_md5Hash;
+- (NSString*) acm_md5Hash;
 
 /**
  *  @method
  *      acm_md5WithEncoding:
  *  @brief
- *      Encodes the receover with 'encoding' and returns the MD5 hash.
+ *      Encodes the receiver with 'encoding' and returns the MD5 hash.
  *  @param
  *      encoding (NSStringEncoding)
  *  @return
  *      Returns the MD5 hash of the receiver, 'nil' if an error occurs.
  */
--(NSString*) acm_md5HashWithEncoding:(NSStringEncoding)encoding;
+- (NSString*) acm_md5HashWithEncoding:(NSStringEncoding)encoding;
+
+- (NSString*)acm_sha1;
+
+- (NSString*)acm_sha1WithEncoding:(NSStringEncoding)encoding;
+
+- (NSString*)acm_sha224;
+
+- (NSString*)acm_sha224:(NSStringEncoding)encoding;
+
+- (NSString*)acm_sha256;
+- (NSString*)acm_sha256WithEncoding:(NSStringEncoding)encoding;
+
+- (NSString*)acm_sha384;
+- (NSString*)acm_sha384WithEncoding:(NSStringEncoding)encoding;
+
+- (NSString*)acm_sha512;
+- (NSString*)acm_sha512WithEncoding:(NSStringEncoding)encoding;
 
 @end
 
@@ -66,7 +91,7 @@
  *  @see
  *      ACMEHash.h
  */
--(NSString*)acm_hash:(ACMHashAlg)alg;
+- (NSString*)acm_hash:(ACMHashAlg)alg;
 
 /**
  *  @discussion
@@ -75,21 +100,21 @@
  */
 
 /** @method acm_md5 */
--(NSString*) acm_md5Hash;
+- (NSString*) acm_md5Hash;
 
 /** @method acm_sha1 */
--(NSString*)acm_sha1;
+- (NSString*)acm_sha1;
 
 /** @method acm_sha224 */
--(NSString*)acm_sha224;
+- (NSString*)acm_sha224;
 
 /** @method acm_sha256 */
--(NSString*)acm_sha256;
+- (NSString*)acm_sha256;
 
 /** @method acm_sha384 */
--(NSString*)acm_sha384;
+- (NSString*)acm_sha384;
 
 /** @method acm_sha512 */
--(NSString*)acm_sha512;
+- (NSString*)acm_sha512;
 
 @end

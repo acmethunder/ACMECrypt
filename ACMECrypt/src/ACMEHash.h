@@ -10,6 +10,7 @@
 #define ACMECrypt_ACMEHash_h
 
 #include <CoreFoundation/CoreFoundation.h>
+#include <CommonCrypto/CommonHMAC.h>
 
 CF_EXTERN_C_BEGIN
 
@@ -27,6 +28,8 @@ typedef enum {
     ACMHashAlgSHA384,
     ACMHashAlgSHA512
 } ACMHashAlg;
+
+bool acm_hash_valid_algorithm(ACMHashAlg alg);
 
 /**
  *  @function

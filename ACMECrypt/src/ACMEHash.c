@@ -6,9 +6,25 @@
 //
 //
 
-#include <CommonCrypto/CommonHMAC.h>
-
 #include "ACMEHash.h"
+
+bool acm_hash_valid_algorithm(ACMHashAlg alg) {
+    bool is_good;
+    
+    switch ( alg ) {
+        case ACMHashAlgMD5    :
+        case ACMHashAlgSHA1   :
+        case ACMHashAlgSHA224 :
+        case ACMHashAlgSHA256 :
+        case ACMHashAlgSHA384 :
+        case ACMHashAlgSHA512 : is_good = true;
+            break;
+        default : is_good = false;
+            break;
+    }
+    
+    return is_good;
+}
 
 CFDataRef ACMHash(CFDataRef data, ACMHashAlg alg) {
     CFDataRef final = NULL;

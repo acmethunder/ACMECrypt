@@ -8,9 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		51148DD9182D576B00E61925 /* ACMEEncode.c in Sources */ = {isa = PBXBuildFile; fileRef = 51148DD8182D576B00E61925 /* ACMEEncode.c */; };
-		51395A0C191073D500877892 /* ACMEHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 51395A0B191073D500877892 /* ACMEHelpers.m */; };
-		51395A0D191073D500877892 /* ACMEHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 51395A0B191073D500877892 /* ACMEHelpers.m */; };
-		51395A0E191073D500877892 /* ACMEHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 51395A0B191073D500877892 /* ACMEHelpers.m */; };
+		51395A0C191073D500877892 /* ACMEAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 51395A0B191073D500877892 /* ACMEAdditions.m */; };
+		51395A0D191073D500877892 /* ACMEAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 51395A0B191073D500877892 /* ACMEAdditions.m */; };
+		51395A0E191073D500877892 /* ACMEAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 51395A0B191073D500877892 /* ACMEAdditions.m */; };
 		51395A1019107C9000877892 /* ACMEStrings.c in Sources */ = {isa = PBXBuildFile; fileRef = 51395A0F19107C9000877892 /* ACMEStrings.c */; };
 		51395A1119107C9000877892 /* ACMEStrings.c in Sources */ = {isa = PBXBuildFile; fileRef = 51395A0F19107C9000877892 /* ACMEStrings.c */; };
 		51395A1219107C9000877892 /* ACMEStrings.c in Sources */ = {isa = PBXBuildFile; fileRef = 51395A0F19107C9000877892 /* ACMEStrings.c */; };
@@ -59,8 +59,8 @@
 /* Begin PBXFileReference section */
 		51148DD8182D576B00E61925 /* ACMEEncode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ACMEEncode.c; sourceTree = "<group>"; };
 		51148DDA182D577F00E61925 /* ACMEEncode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ACMEEncode.h; sourceTree = "<group>"; };
-		51395A0A191073D500877892 /* ACMEHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACMEHelpers.h; sourceTree = "<group>"; };
-		51395A0B191073D500877892 /* ACMEHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACMEHelpers.m; sourceTree = "<group>"; };
+		51395A0A191073D500877892 /* ACMEAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACMEAdditions.h; sourceTree = "<group>"; };
+		51395A0B191073D500877892 /* ACMEAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACMEAdditions.m; sourceTree = "<group>"; };
 		51395A0F19107C9000877892 /* ACMEStrings.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ACMEStrings.c; sourceTree = "<group>"; };
 		51395A1319107CE900877892 /* ACMEStrings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ACMEStrings.h; sourceTree = "<group>"; };
 		5151358617F51AE9007CF5A6 /* rsa_private_key.p12 */ = {isa = PBXFileReference; lastKnownFileType = file; path = rsa_private_key.p12; sourceTree = "<group>"; };
@@ -198,8 +198,8 @@
 				51B8BA4A18EF96D30003A4E9 /* ACMEHash.h */,
 				51B8BA4B18EFA7590003A4E9 /* ACMESymmetric.h */,
 				51B8BA4C18EFA76C0003A4E9 /* ACMESymmetric.c */,
-				51395A0A191073D500877892 /* ACMEHelpers.h */,
-				51395A0B191073D500877892 /* ACMEHelpers.m */,
+				51395A0A191073D500877892 /* ACMEAdditions.h */,
+				51395A0B191073D500877892 /* ACMEAdditions.m */,
 				51395A1319107CE900877892 /* ACMEStrings.h */,
 				51395A0F19107C9000877892 /* ACMEStrings.c */,
 			);
@@ -372,7 +372,7 @@
 				51C46D1818B7068600E672C5 /* ACMECrypt.c in Sources */,
 				51B8BA4E18EFA76C0003A4E9 /* ACMESymmetric.c in Sources */,
 				51B8BA4818EF96C20003A4E9 /* ACMEHash.c in Sources */,
-				51395A0D191073D500877892 /* ACMEHelpers.m in Sources */,
+				51395A0D191073D500877892 /* ACMEAdditions.m in Sources */,
 				51C46CFD18B7066B00E672C5 /* ViewController.m in Sources */,
 				51C46CF718B7066B00E672C5 /* AppDelegate.m in Sources */,
 				51395A1119107C9000877892 /* ACMEStrings.c in Sources */,
@@ -386,7 +386,7 @@
 			files = (
 				51395A1219107C9000877892 /* ACMEStrings.c in Sources */,
 				51C46D1118B7066B00E672C5 /* ACMECrypt_DemoTests.m in Sources */,
-				51395A0E191073D500877892 /* ACMEHelpers.m in Sources */,
+				51395A0E191073D500877892 /* ACMEAdditions.m in Sources */,
 				51B8BA4F18EFA76C0003A4E9 /* ACMESymmetric.c in Sources */,
 				51B8BA4918EF96C20003A4E9 /* ACMEHash.c in Sources */,
 			);
@@ -397,7 +397,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				51B8BA4D18EFA76C0003A4E9 /* ACMESymmetric.c in Sources */,
-				51395A0C191073D500877892 /* ACMEHelpers.m in Sources */,
+				51395A0C191073D500877892 /* ACMEAdditions.m in Sources */,
 				51148DD9182D576B00E61925 /* ACMEEncode.c in Sources */,
 				51B8BA4718EF96C20003A4E9 /* ACMEHash.c in Sources */,
 				51395A1019107C9000877892 /* ACMEStrings.c in Sources */,

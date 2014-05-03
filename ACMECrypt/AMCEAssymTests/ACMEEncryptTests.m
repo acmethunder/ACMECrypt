@@ -10,7 +10,7 @@
 
 #import "ACMECrypt.h"
 #import "ACMEEncode.h"
-#import "ACMEHelpers.h"
+#import "ACMEAdditions.h"
 
 @interface ACMEEncryptTests : XCTestCase
 
@@ -258,6 +258,23 @@ static NSString * const kTestMD5 = @"858be8b0c08700867c623d1960165ddd";
     
 }
 
+/**
+ *  @discussion
+ *      Sample string from: https://dev.twitter.com/docs/auth/creating-signature
+ */
+static NSString * const kTwtrSignatureBaseString = @"POST&https%3A%2F%2Fapi.twitter.com%2F1%2Fstatuses%2Fupdate.json&include_entities%3Dtrue%26oauth_consumer_key%3Dxvz1evFS4wEEPTGEFPHBog%26oauth_nonce%3DkYjzVBB8Y0ZFabxSWbWovY3uYSQ2pTgmZeNu2VS4cg%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1318622958%26oauth_token%3D370773112-GmHxMAgYyLbNEtIKZeRNFsMKPR9EyMZeS9weJAEb%26oauth_version%3D1.0%26status%3DHello%2520Ladies%2520%252B%2520Gentlemen%252C%2520a%2520signed%2520OAuth%2520request%2521";
+
+/**
+ *  @discussion
+ *      genertated via: >md5 -s <kTwtrSignatureBaseString>
+ */
+static NSString * const kTwtrMD5 = @"00ab4d53dbe9900a3ac2a61201be5290";
+
+-(void)testMD5TwitterExample {
+    NSString *twtrMD5 = [kTwtrSignatureBaseString acm_md5Hash];
+    XCTAssertEqualObjects( kTwtrMD5, twtrMD5, @"" );
+}
+
 #pragma mark SHA1
 
 static NSString * const kSHA1Check = @"4304534fbae6f879ab91ea5096aa728a9efd6481";
@@ -289,6 +306,26 @@ static NSString * const kSHA1Check = @"4304534fbae6f879ab91ea5096aa728a9efd6481"
     XCTAssertEqualObjects( sha1String, kSHA1Check, @"SHould be logically equal." );
 }
 
+-(void)testSHA1OnNSString {
+    NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
+	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
+    
+    NSString *json_string = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    NSString *sha1String = [json_string acm_sha1];
+    XCTAssertEqualObjects(sha1String, kSHA1Check, @"" );
+}
+
+/**
+ *  @discussion
+ *      Generated via > echo -n "<kTwtrSignatureBaseString>" | shasum
+ */
+static NSString * const kTwtrSHA1 = @"996eeac5353ddfac330dc6562f2d6d491db6623d";
+
+-(void)testSAH1OnTWitterExample {
+    NSString *twtrSAH1 = [kTwtrSignatureBaseString acm_sha1];
+    XCTAssertEqualObjects( twtrSAH1, kTwtrSHA1, @"" );
+}
+
 #pragma mark SHA224
 
 static NSString * const kSha224Check = @"3a85e22d843b0783be27af38dcb145678523aa83b06b0d74444830e7";
@@ -317,6 +354,26 @@ static NSString * const kSha224Check = @"3a85e22d843b0783be27af38dcb145678523aa8
     
     NSString *sha224String = [jsonData acm_sha224];
     XCTAssertEqualObjects( sha224String, kSha224Check, @"Should be logically equal." );
+}
+
+-(void)testSHA224OnNSString {
+    NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
+	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
+    
+    NSString *json_string = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    NSString *sha224String = [json_string acm_sha224];
+    XCTAssertEqualObjects(sha224String, kSha224Check, @"" );
+}
+
+/**
+ *  @discussion
+ *      Generated via >echo -n "<kTwtrSignatureBaseString>" | shasum -a 224
+ */
+static NSString * const kTwtrSHA224 = @"8f4c547b94d96d7cfe27862b94200f31e440300f0fc605ddfd61deeb";
+
+-(void)testSHA22OnTwitterExample {
+    NSString *sha224String = [kTwtrSignatureBaseString acm_sha224];
+    XCTAssertEqualObjects( sha224String, kTwtrSHA224, @"" );
 }
 
 #pragma mark SHA256
@@ -350,7 +407,27 @@ static NSString * const kSHA256Check = @"5d572efc2336007b483c85957c75006de76d265
     XCTAssertEqualObjects( sha256String, kSHA256Check, @"" );
 }
 
-#pragma mark SAH384
+-(void)testSHA256OnNSString {
+    NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
+	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
+    
+    NSString *json_string = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    NSString *sha256String = [json_string acm_sha256];
+    XCTAssertEqualObjects(sha256String, kSHA256Check, @"" );
+}
+
+/**
+ *  @discussion
+ *      Generated via >echo -n "<kTwtrSignatureBaseString>" | shasum -a 256
+ */
+static NSString * const kTwtrSHA256 = @"22b08fd1867b58f7ebf8a86949c7faaca2ceb814782b3b860d107754682636e2";
+
+-(void)testSHA256OnTWitterExample {
+    NSString *sha256_string = [kTwtrSignatureBaseString acm_sha256];
+    XCTAssertEqualObjects( sha256_string, kTwtrSHA256, @"" );
+}
+
+#pragma mark SHA384
 
 static NSString * const kSHA384Check = @"40b408ebbb3fa57855e1e43978aaea8906cd23dc6d9add183346929b014d6ae2d124cdcd3c91ff5164aa76b86c7dbf27";
 
@@ -379,6 +456,26 @@ static NSString * const kSHA384Check = @"40b408ebbb3fa57855e1e43978aaea8906cd23d
     
     NSString *sha384String = [jsonData acm_sha384];
     XCTAssertEqualObjects( sha384String, kSHA384Check, @"" );
+}
+
+-(void)testSHA384OnNSString {
+    NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
+	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
+    
+    NSString *json_string = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    NSString *sha384_string = [json_string acm_sha384];
+    XCTAssertEqualObjects(sha384_string, kSHA384Check, @"" );
+}
+
+/**
+ *  @discussion
+ *      Generated via >echo -n "<kTwtrSignatureBaseString>" | shasum -a 384
+ */
+static NSString * const kTwtrSHA384 = @"881bccbcffc7ba471ea00b2f1d8cd15a32b6527ead53fe22482b745ee283406d0c62263cbba8d9f6b64dfdcbb092d8e6";
+
+-(void)testSHA384OnTwitterExample {
+    NSString *sha384_string = [kTwtrSignatureBaseString acm_sha384];
+    XCTAssertEqualObjects( sha384_string, kTwtrSHA384, @"" );
 }
 
 #pragma mark SHA512
@@ -410,6 +507,26 @@ static NSString * const kSHA512Check = @"f3e2cde42d3a094b37b296346795c1df8b04172
     
     NSString *sha512String = [jsonData acm_sha512];
     XCTAssertEqualObjects( sha512String, kSHA512Check, @"" );
+}
+
+-(void)testSHA512OnNSString {
+    NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"sample_large_json" ofType:@"json"];
+	NSData *jsonData = [[NSData alloc] initWithContentsOfFile:path];
+    
+    NSString *json_string = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    NSString *sha512_string = [json_string acm_sha512];
+    XCTAssertEqualObjects(sha512_string, kSHA512Check, @"" );
+}
+
+/**
+ *  @discussion
+ *      Generated via >echo -n "<kTwtrSignatureBaseString>" | shasum -a 512
+ */
+static NSString * const kTwtrSHA512 = @"2587b48845dfd32afad49274bebe036df7a2224885cae4cd91eb21a3d1445203196ea5ec48c0885c8de29f09479e4ecebd6d9b1d63be4fd7d9d9a29f7d9db070";
+
+-(void)testSHA512onTwitterexample {
+    NSString *sha512_string = [kTwtrSignatureBaseString acm_sha512];
+    XCTAssertEqualObjects( sha512_string, kTwtrSHA512, @"" );
 }
 
 #pragma mark -

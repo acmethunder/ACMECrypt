@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
 
   s.source = {
 	:git => "https://github.com/mdewolfe/ACMECrypt.git",
-	:commit => "5280ae5a823dac1b7fe202da325492d8b0a3597c"
+	:tag => s.version
   }
 
   s.requires_arc = true
