@@ -10,31 +10,6 @@
 
 #include "ACMEHash.h"
 
-CF_EXTERN_C_BEGIN
-
-#pragma mark -
-#pragma mark Validation
-
-/**
- *  @name
- *      Validation
- *  @function
- *      acm_valid_encoding
- *  @brief
- *      Validates the given encoding.
- *  @discussion
- *      All encodings listed under 'NSStringEncoding' are considered valid.
- *  @param
- *      enc (NSStringEncoding), encoding to validate.
- *  @return
- *      'true' if 'enc' is equal to any values listed under 'NSStringEncoding.' 'false' otherwise.
- *  @see
- *      NSString.h for list of encoding values.
- */
-BOOL acm_valid_encoding(NSStringEncoding enc);
-
-CF_EXTERN_C_END
-
 #pragma mark -
 #pragma mark NSString+ACMEHash
 

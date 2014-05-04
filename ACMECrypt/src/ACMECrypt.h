@@ -15,21 +15,10 @@
 
 #include "ACMEStrings.h"
 #include "ACMEHash.h"
+#include "ACMEHmac.h"
 #include "ACMESymmetric.h"
 
 CF_EXTERN_C_BEGIN
-
-#pragma mark -
-#pragma mark DATA TYPES
-
-typedef enum uint32_t {
-	kACHMACAlgSHA1   = kCCHmacAlgSHA1,
-	kACHMACAlgSHA224 = kCCHmacAlgSHA224,
-	kACHMACAlgSHA256 = kCCHmacAlgSHA256,
-	kACHMACAlgSHA384 = kCCHmacAlgSHA384,
-	kACHMACAlgSHA512 = kCCHmacAlgSHA512,
-	kACHMACAlgMD5    = kCCHmacAlgMD5
-}ACHMACAlgorithm;
 
 #pragma mark -
 #pragma mark FREE STANDING C FUNCTIONS
@@ -102,10 +91,6 @@ CFDataRef ACMEncrypt(CFDataRef data, SecKeyRef publicKey);
  *		NSData*, decrypted data object, or 'nil' if an error occurs.
  */
 CFDataRef ACMDecryptWithKey(CFDataRef data, SecKeyRef key);
-
-#pragma mark Signing
-
-CFDataRef ACMHmac(CFDataRef data, CFStringRef key, ACHMACAlgorithm alg);
 
 CF_EXTERN_C_END
 

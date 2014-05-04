@@ -215,47 +215,47 @@ CFDataRef ACMDecryptWithKey(CFDataRef data, SecKeyRef key) {
 
 
 
-#pragma mark Signing
-
-CFDataRef ACMHmac(CFDataRef data, CFStringRef key, ACHMACAlgorithm alg) {
-	CFIndex dataLength = ( data ? CFDataGetLength(data) : 0 );
-	CFIndex keyLength  = ( key ? CFStringGetLength(key) : 0 );
-	
-	CFDataRef final = NULL;
-	
-	if ( (dataLength > 0) && (keyLength > 0) ) {
-		int digestLength;
-		switch (alg) {
-			case kACHMACAlgSHA1:
-				digestLength = CC_SHA1_DIGEST_LENGTH;
-				break;
-			case kACHMACAlgSHA224:
-				digestLength = CC_SHA224_DIGEST_LENGTH;
-				break;
-			case kACHMACAlgSHA256:
-				digestLength = CC_SHA256_DIGEST_LENGTH;
-				break;
-			case kACHMACAlgSHA384:
-				digestLength = CC_SHA384_DIGEST_LENGTH;
-				break;
-			case kACHMACAlgSHA512:
-				digestLength = CC_SHA512_DIGEST_LENGTH;
-				break;
-			default:
-				digestLength = CC_MD5_DIGEST_LENGTH;
-				break;
-		}
-		
-		const char *keyptr = CFStringGetCStringPtr(key, kCFStringEncodingUTF8);
-		const char *dataptr = (char*)CFDataGetBytePtr(data);
-		unsigned char *chmac = malloc(digestLength);
-        memset(chmac, 0, digestLength);
-		
-		CCHmac(alg, keyptr, keyLength, dataptr, dataLength, chmac);
-        final = CFDataCreate(kCFAllocatorDefault, chmac, digestLength);
-        
-        free(chmac);
-	}
-	
-	return final;
-}
+//#pragma mark Signing
+//
+//CFDataRef ACMHmac(CFDataRef data, CFStringRef key, ACHMACAlgorithm alg) {
+//	CFIndex dataLength = ( data ? CFDataGetLength(data) : 0 );
+//	CFIndex keyLength  = ( key ? CFStringGetLength(key) : 0 );
+//	
+//	CFDataRef final = NULL;
+//	
+//	if ( (dataLength > 0) && (keyLength > 0) ) {
+//		int digestLength;
+//		switch (alg) {
+//			case kACHMACAlgSHA1:
+//				digestLength = CC_SHA1_DIGEST_LENGTH;
+//				break;
+//			case kACHMACAlgSHA224:
+//				digestLength = CC_SHA224_DIGEST_LENGTH;
+//				break;
+//			case kACHMACAlgSHA256:
+//				digestLength = CC_SHA256_DIGEST_LENGTH;
+//				break;
+//			case kACHMACAlgSHA384:
+//				digestLength = CC_SHA384_DIGEST_LENGTH;
+//				break;
+//			case kACHMACAlgSHA512:
+//				digestLength = CC_SHA512_DIGEST_LENGTH;
+//				break;
+//			default:
+//				digestLength = CC_MD5_DIGEST_LENGTH;
+//				break;
+//		}
+//		
+//		const char *keyptr = CFStringGetCStringPtr(key, kCFStringEncodingUTF8);
+//		const char *dataptr = (char*)CFDataGetBytePtr(data);
+//		unsigned char *chmac = malloc(digestLength);
+//        memset(chmac, 0, digestLength);
+//		
+//		CCHmac(alg, keyptr, keyLength, dataptr, dataLength, chmac);
+//        final = CFDataCreate(kCFAllocatorDefault, chmac, digestLength);
+//        
+//        free(chmac);
+//	}
+//	
+//	return final;
+//}
