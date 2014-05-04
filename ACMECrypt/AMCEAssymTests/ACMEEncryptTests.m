@@ -479,6 +479,19 @@ static NSString * const kTwtrSHA512 = @"2587b48845dfd32afad49274bebe036df7a22248
 
 static NSString * const kSignKey = @"qwertyazerty";
 
+#pragma mark nil tests
+
+-(void)testNilHMAC {
+    NSString *hmac_one = [self.json_data acm_hmac:(kACMHMACAlgSHA1 - 1) key:kSignKey];
+    XCTAssertNil( hmac_one, @"" );
+    
+    NSString *hmac_two = [self.json_data acm_hmac:(kACMHMACAlgSHA224 + 1) key:kSignKey];
+    XCTAssertNil( hmac_two, @"" );
+    
+    NSString *hmac_three = [self.json_data acm_hmac:kACMHMACAlgMD5 key:nil];
+    XCTAssertNil( hmac_three, @"" );
+}
+
 
 #pragma mark MD5
 
@@ -490,7 +503,7 @@ static NSString * const kSignKey = @"qwertyazerty";
 
 static NSString * const kJSONMD5Check = @"ddb67a34c3f54728ef3130fbf2031498";
 
--(void)testSignHMACMD5 {
+-(void)testSignMD5Core {
 	NSData *hmacedJSON = (__bridge id)ACMHmac(
                                               (__bridge CFDataRef)self.json_data,
                                               (__bridge CFStringRef)kSignKey,
@@ -505,9 +518,14 @@ static NSString * const kJSONMD5Check = @"ddb67a34c3f54728ef3130fbf2031498";
 	XCTAssertEqualObjects( lowerHex, kJSONMD5Check, @"" );
 }
 
--(void)testMD5SignOnNSData {
+-(void)testSignMD5OnNSData {
     NSString *md5Sign = [self.json_data acm_hmacMD5:kSignKey];
     XCTAssertEqualObjects(md5Sign, kJSONMD5Check, @"" );
+}
+
+-(void)testSignMD5OnNSString {
+    NSString *md5String = [self.json_string acm_hmacMD5:kSignKey];
+    XCTAssertEqualObjects( md5String, kJSONMD5Check, @"" );
 }
 
 #pragma mark SHA1
@@ -536,6 +554,11 @@ static NSString * const kJSONSHA1Check = @"b82f69844a68cdc6daf8a4235d34ede793bfb
 
 -(void)testSHA1SignOnNSData {
     NSString *sha1 = [self.json_data acm_hmacSHA1:kSignKey];
+    XCTAssertEqualObjects( sha1, kJSONSHA1Check, @"" );
+}
+
+-(void)testSignSHA1OnNSString {
+    NSString *sha1 = [self.json_string acm_hmacSHA1:kSignKey];
     XCTAssertEqualObjects( sha1, kJSONSHA1Check, @"" );
 }
 
@@ -581,6 +604,11 @@ static NSString * const kJSONSHA224Check = @"701a0b51bfa0efe0398ed17ac9c93969f8f
     XCTAssertEqualObjects( sha224String, kJSONSHA224Check, @"" );
 }
 
+-(void)testSignSHA224OnNSString {
+    NSString *sha = [self.json_string acm_hmacSHA224:kSignKey];
+    XCTAssertEqualObjects( sha, kJSONSHA224Check, @"" );
+}
+
 #pragma mark SHA256
 
 /*!
@@ -605,9 +633,14 @@ static NSString * const kJSONSHA256Check = @"249d925e85edfd266f9d23b3fae0498b2ef
 	XCTAssertEqualObjects( lowerHex, kJSONSHA256Check, @"" );
 }
 
--(void)testSIgnSHA256OnNSData {
+-(void)testSignSHA256OnNSData {
     NSString *sha256String = [self.json_data acm_hmacSHA256:kSignKey];
     XCTAssertEqualObjects( sha256String, kJSONSHA256Check, @"" );
+}
+
+-(void)testSignSHA256OnNSString {
+    NSString *sha = [self.json_string acm_hmacSHA256:kSignKey];
+    XCTAssertEqualObjects( sha, kJSONSHA256Check, @"" );
 }
 
 #pragma mark SHA384
@@ -640,6 +673,11 @@ static NSString * const kJSONSHA384Check = @"af8b3cc7d170ece68aedeb09faa38098ec2
     XCTAssertEqualObjects( sha384String, kJSONSHA384Check, @"" );
 }
 
+-(void)testSignSHA384OnNSString {
+    NSString *sha = [self.json_string acm_hmacSHA384:kSignKey];
+    XCTAssertEqualObjects( sha, kJSONSHA384Check, @"" );
+}
+
 #pragma mark SHA512
 
 /*!
@@ -668,6 +706,11 @@ static NSString * const kJSONSHA512Check = @"fc2b9f75b813094674ef9ae8d9c81745158
 -(void)testSignSHA512OnNSData {
     NSString *sha512String = [self.json_data acm_hmacSHA512:kSignKey];
     XCTAssertEqualObjects( sha512String, kJSONSHA512Check, @"" );
+}
+
+-(void)testSignSHA512OnNSString {
+    NSString *sha = [self.json_string acm_hmacSHA512:kSignKey];
+    XCTAssertEqualObjects( sha, kJSONSHA512Check, @"" );
 }
 
 @end
