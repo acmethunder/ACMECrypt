@@ -20,14 +20,24 @@ Pod::Spec.new do |s|
   s.requires_arc = true
   s.frameworks = "Security"
   
+  s.subspec 'ACMECryptHelp' do |ss|
+  	ss.source_files = "ACMECrypt/src/ACMEHelpMe.{h,m}"
+  	ss.requires_arc = true
+  end
+  
   s.subspec 'ACMEHashCore' do |ss|
   	ss.source_files = "ACMECrypt/src/ACMEHash.{h,c}"
   end
   
   s.subspec 'ACMEHash' do |ss|
-  	ss.source_files = 'ACMECrypt/src/ACMEAdditions.{h,m}'
+  	ss.source_files = 'ACMECrypt/src/ACMEHashAdditions.{h,m}'
   	ss.requires_arc = true
   	ss.dependency 'ACMECrypt/ACMEHashCore'
+  	ss.dependency 'ACMECrypt/ACMECryptHelp'
+  end
+  
+  s.subspec 'ACMEHMACCore' do |ss|
+  	ss.source_files = "ACMECrypt/src/ACMEHmac.{h,c}"
   end
   
   
