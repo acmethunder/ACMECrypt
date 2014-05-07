@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "ACMECrypt"
-  s.version          = "0.0.1"
+  s.version          = "0.0.2"
   s.summary          = "Some convenince methods for hashing data."
   s.homepage         = "https://github.com/mdewolfe/ACMECrypt"
   s.license          = "MIT"
@@ -18,7 +18,6 @@ Pod::Spec.new do |s|
   }
 
   s.requires_arc = true
-  s.frameworks = "Security"
   
   s.subspec 'ACMECryptHelp' do |ss|
   	ss.source_files = "ACMECrypt/src/ACMEHelpMe.{h,m}"
@@ -30,14 +29,21 @@ Pod::Spec.new do |s|
   end
   
   s.subspec 'ACMEHash' do |ss|
-  	ss.source_files = 'ACMECrypt/src/ACMEHashAdditions.{h,m}'
+  	ss.source_files = "ACMECrypt/src/ACMEHashAdditions.{h,m}"
   	ss.requires_arc = true
-  	ss.dependency 'ACMECrypt/ACMEHashCore'
-  	ss.dependency 'ACMECrypt/ACMECryptHelp'
+  	ss.dependency "ACMECrypt/ACMEHashCore"
+  	ss.dependency "ACMECrypt/ACMECryptHelp"
   end
   
   s.subspec 'ACMEHMACCore' do |ss|
   	ss.source_files = "ACMECrypt/src/ACMEHmac.{h,c}"
+  end
+  
+  s.subspec 'ACMEHMAC' do |ss|
+  	ss.source_files = "ACMECrypt/src/ACMEHmacAdditions.{h,m}"
+  	ss.requires_arc = true
+  	ss.dependency "ACMECrypt/ACMEHMACCore"
+  	ss.dependency "ACMECrypt/ACMECryptHelp"
   end
   
   
