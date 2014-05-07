@@ -8,7 +8,6 @@ Pod::Spec.new do |s|
   s.author           = { "Mike De Wolfe" => "dewolfe.michael@gmail.com" }
   s.social_media_url = "http://twitter.com/mikedewolfe"
 
-  #  When using multiple platforms
   s.ios.deployment_target = "5.0"
   s.osx.deployment_target = "10.7"
 
@@ -21,6 +20,7 @@ Pod::Spec.new do |s|
   
   s.subspec 'ACMECryptStrings' do |ss|
   	ss.source_files = "ACMECrypt/src/ACMEStrings.{h,c}"
+  	ss.frameworks = "CoreFoundation"
   end
   
   s.subspec 'ACMECryptHelp' do |ss|
@@ -30,6 +30,7 @@ Pod::Spec.new do |s|
   
   s.subspec 'ACMEHashCore' do |ss|
   	ss.source_files = "ACMECrypt/src/ACMEHash.{h,c}"
+  	ss.frameworks = "CoreFoundation"
   	ss.dependency "ACMECrypt/ACMECryptStrings"
   end
   
@@ -42,6 +43,7 @@ Pod::Spec.new do |s|
   
   s.subspec 'ACMEHMACCore' do |ss|
   	ss.source_files = "ACMECrypt/src/ACMEHmac.{h,c}"
+  	ss.frameworks = "CoreFoundation"
   	ss.dependency "ACMECrypt/ACMECryptStrings"
   end
   
