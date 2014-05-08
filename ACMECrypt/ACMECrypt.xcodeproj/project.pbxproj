@@ -8,13 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		51148DD9182D576B00E61925 /* ACMEEncode.c in Sources */ = {isa = PBXBuildFile; fileRef = 51148DD8182D576B00E61925 /* ACMEEncode.c */; };
-		51395A0C191073D500877892 /* ACMEHashAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 51395A0B191073D500877892 /* ACMEHashAdditions.m */; };
-		51395A0D191073D500877892 /* ACMEHashAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 51395A0B191073D500877892 /* ACMEHashAdditions.m */; };
-		51395A0E191073D500877892 /* ACMEHashAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 51395A0B191073D500877892 /* ACMEHashAdditions.m */; };
+		51395A0C191073D500877892 /* NSString+ACMEHash.m in Sources */ = {isa = PBXBuildFile; fileRef = 51395A0B191073D500877892 /* NSString+ACMEHash.m */; };
+		51395A0D191073D500877892 /* NSString+ACMEHash.m in Sources */ = {isa = PBXBuildFile; fileRef = 51395A0B191073D500877892 /* NSString+ACMEHash.m */; };
+		51395A0E191073D500877892 /* NSString+ACMEHash.m in Sources */ = {isa = PBXBuildFile; fileRef = 51395A0B191073D500877892 /* NSString+ACMEHash.m */; };
 		51395A1019107C9000877892 /* ACMEStrings.c in Sources */ = {isa = PBXBuildFile; fileRef = 51395A0F19107C9000877892 /* ACMEStrings.c */; };
 		51395A1119107C9000877892 /* ACMEStrings.c in Sources */ = {isa = PBXBuildFile; fileRef = 51395A0F19107C9000877892 /* ACMEStrings.c */; };
 		51395A1219107C9000877892 /* ACMEStrings.c in Sources */ = {isa = PBXBuildFile; fileRef = 51395A0F19107C9000877892 /* ACMEStrings.c */; };
 		513D8D10191B0704003FAA45 /* NSData+ACMEHmac.m in Sources */ = {isa = PBXBuildFile; fileRef = 513D8D0F191B0704003FAA45 /* NSData+ACMEHmac.m */; };
+		513D8D13191B0D66003FAA45 /* NSData+ACMEHash.m in Sources */ = {isa = PBXBuildFile; fileRef = 513D8D12191B0D66003FAA45 /* NSData+ACMEHash.m */; };
 		5151358817F51AE9007CF5A6 /* rsa_private_key.p12 in Resources */ = {isa = PBXBuildFile; fileRef = 5151358617F51AE9007CF5A6 /* rsa_private_key.p12 */; };
 		5151358917F51AE9007CF5A6 /* rsa_public_key.der in Resources */ = {isa = PBXBuildFile; fileRef = 5151358717F51AE9007CF5A6 /* rsa_public_key.der */; };
 		51B8BA4718EF96C20003A4E9 /* ACMEHash.c in Sources */ = {isa = PBXBuildFile; fileRef = 51B8BA4618EF96C20003A4E9 /* ACMEHash.c */; };
@@ -69,12 +70,14 @@
 /* Begin PBXFileReference section */
 		51148DD8182D576B00E61925 /* ACMEEncode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ACMEEncode.c; sourceTree = "<group>"; };
 		51148DDA182D577F00E61925 /* ACMEEncode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ACMEEncode.h; sourceTree = "<group>"; };
-		51395A0A191073D500877892 /* ACMEHashAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACMEHashAdditions.h; sourceTree = "<group>"; };
-		51395A0B191073D500877892 /* ACMEHashAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACMEHashAdditions.m; sourceTree = "<group>"; };
+		51395A0A191073D500877892 /* NSString+ACMEHash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+ACMEHash.h"; sourceTree = "<group>"; };
+		51395A0B191073D500877892 /* NSString+ACMEHash.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+ACMEHash.m"; sourceTree = "<group>"; };
 		51395A0F19107C9000877892 /* ACMEStrings.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ACMEStrings.c; sourceTree = "<group>"; };
 		51395A1319107CE900877892 /* ACMEStrings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ACMEStrings.h; sourceTree = "<group>"; };
 		513D8D0E191B0704003FAA45 /* NSData+ACMEHmac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+ACMEHmac.h"; sourceTree = "<group>"; };
 		513D8D0F191B0704003FAA45 /* NSData+ACMEHmac.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+ACMEHmac.m"; sourceTree = "<group>"; };
+		513D8D11191B0D66003FAA45 /* NSData+ACMEHash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+ACMEHash.h"; sourceTree = "<group>"; };
+		513D8D12191B0D66003FAA45 /* NSData+ACMEHash.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+ACMEHash.m"; sourceTree = "<group>"; };
 		5151358617F51AE9007CF5A6 /* rsa_private_key.p12 */ = {isa = PBXFileReference; lastKnownFileType = file; path = rsa_private_key.p12; sourceTree = "<group>"; };
 		5151358717F51AE9007CF5A6 /* rsa_public_key.der */ = {isa = PBXFileReference; lastKnownFileType = file; path = rsa_public_key.der; sourceTree = "<group>"; };
 		51B8BA4618EF96C20003A4E9 /* ACMEHash.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ACMEHash.c; sourceTree = "<group>"; };
@@ -216,8 +219,10 @@
 				51B8BA4A18EF96D30003A4E9 /* ACMEHash.h */,
 				51B8BA4B18EFA7590003A4E9 /* ACMESymmetric.h */,
 				51B8BA4C18EFA76C0003A4E9 /* ACMESymmetric.c */,
-				51395A0A191073D500877892 /* ACMEHashAdditions.h */,
-				51395A0B191073D500877892 /* ACMEHashAdditions.m */,
+				51395A0A191073D500877892 /* NSString+ACMEHash.h */,
+				51395A0B191073D500877892 /* NSString+ACMEHash.m */,
+				513D8D11191B0D66003FAA45 /* NSData+ACMEHash.h */,
+				513D8D12191B0D66003FAA45 /* NSData+ACMEHash.m */,
 				51395A1319107CE900877892 /* ACMEStrings.h */,
 				51395A0F19107C9000877892 /* ACMEStrings.c */,
 				51DF57191916A28D009552D5 /* ACMEHmac.h */,
@@ -398,7 +403,7 @@
 				51C46D1818B7068600E672C5 /* ACMECrypt.c in Sources */,
 				51B8BA4E18EFA76C0003A4E9 /* ACMESymmetric.c in Sources */,
 				51B8BA4818EF96C20003A4E9 /* ACMEHash.c in Sources */,
-				51395A0D191073D500877892 /* ACMEHashAdditions.m in Sources */,
+				51395A0D191073D500877892 /* NSString+ACMEHash.m in Sources */,
 				51C46CFD18B7066B00E672C5 /* ViewController.m in Sources */,
 				51DF571C1916A32E009552D5 /* ACMEHmac.c in Sources */,
 				51DF57261916D3AD009552D5 /* ACMEHelpMe.m in Sources */,
@@ -417,7 +422,7 @@
 				51395A1219107C9000877892 /* ACMEStrings.c in Sources */,
 				51C46D1118B7066B00E672C5 /* ACMECrypt_DemoTests.m in Sources */,
 				51DF571D1916A32E009552D5 /* ACMEHmac.c in Sources */,
-				51395A0E191073D500877892 /* ACMEHashAdditions.m in Sources */,
+				51395A0E191073D500877892 /* NSString+ACMEHash.m in Sources */,
 				51DF57221916ABC9009552D5 /* NSString+ACMEHmac.m in Sources */,
 				51B8BA4F18EFA76C0003A4E9 /* ACMESymmetric.c in Sources */,
 				51B8BA4918EF96C20003A4E9 /* ACMEHash.c in Sources */,
@@ -429,13 +434,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				51B8BA4D18EFA76C0003A4E9 /* ACMESymmetric.c in Sources */,
-				51395A0C191073D500877892 /* ACMEHashAdditions.m in Sources */,
+				51395A0C191073D500877892 /* NSString+ACMEHash.m in Sources */,
 				51DF57251916D3AD009552D5 /* ACMEHelpMe.m in Sources */,
 				51DF571B1916A32E009552D5 /* ACMEHmac.c in Sources */,
 				51DF57201916ABC9009552D5 /* NSString+ACMEHmac.m in Sources */,
 				51148DD9182D576B00E61925 /* ACMEEncode.c in Sources */,
 				51B8BA4718EF96C20003A4E9 /* ACMEHash.c in Sources */,
 				51395A1019107C9000877892 /* ACMEStrings.c in Sources */,
+				513D8D13191B0D66003FAA45 /* NSData+ACMEHash.m in Sources */,
 				513D8D10191B0704003FAA45 /* NSData+ACMEHmac.m in Sources */,
 				51E2B64617F3C52600E382D0 /* ACMECrypt.c in Sources */,
 				51E2B64117F3C2DA00E382D0 /* ACMEEncryptTests.m in Sources */,

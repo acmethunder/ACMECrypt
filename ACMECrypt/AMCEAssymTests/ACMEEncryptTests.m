@@ -10,7 +10,8 @@
 
 #import "ACMECrypt.h"
 #import "ACMEEncode.h"
-#import "ACMEHashAdditions.h"
+#import "NSData+ACMEHash.h"
+#import "NSString+ACMEHash.h"
 #import "NSData+ACMEHmac.h"
 #import "NSString+ACMEHmac.h"
 
