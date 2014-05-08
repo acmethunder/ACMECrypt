@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "ACMECrypt"
-  s.version          = "0.0.2"
+  s.version          = "0.0.3"
   s.summary          = "Some convenince methods for hashing data."
   s.homepage         = "https://github.com/mdewolfe/ACMECrypt"
   s.license          = "MIT"
@@ -44,6 +44,7 @@ Pod::Spec.new do |s|
   	ss.source_files = "ACMECrypt/src/NSString+ACMEHash.{h,m}"
   	ss.requires_arc = true
   	ss.dependency 'ACMECrypt/ACMEHashNSData'
+  	ss.dependency 'ACMECrypt/ACMECryptHelp'
   end
   
   s.subspec 'ACMEHMACCore' do |ss|
