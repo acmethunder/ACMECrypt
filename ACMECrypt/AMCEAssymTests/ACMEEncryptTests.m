@@ -11,7 +11,8 @@
 #import "ACMECrypt.h"
 #import "ACMEEncode.h"
 #import "ACMEHashAdditions.h"
-#import "ACMEHmacAdditions.h"
+#import "NSData+ACMEHmac.h"
+#import "NSString+ACMEHmac.h"
 
 @interface ACMEEncryptTests : XCTestCase
 

@@ -20,7 +20,7 @@ Pod::Spec.new do |s|
   
   s.subspec 'ACMECryptStrings' do |ss|
   	ss.source_files = "ACMECrypt/src/ACMEStrings.{h,c}"
-	ss.frameworks = "CoreFoundation"
+	 ss.frameworks = "CoreFoundation"
   end
   
   s.subspec 'ACMECryptHelp' do |ss|
@@ -45,6 +45,19 @@ Pod::Spec.new do |s|
   	ss.source_files = "ACMECrypt/src/ACMEHmac.{h,c}"
 	ss.frameworks = "CoreFoundation"
   	ss.dependency "ACMECrypt/ACMECryptStrings"
+  end
+  
+  s.subspec 'ACMEHMACNSData' do |ss|
+  	ss.source_files = "ACMECrypt/src/NSData+ACMEHmac.{h,m}"
+  	ss.requires_arc = true
+  	ss.dependency 'ACMECrypt/ACMEHMACCore'
+  	ss.dependency 'ACMECrypt/ACMECryptHelp'
+  end
+  
+  s.subspec 'ACMEHMACNSstring' do |ss|
+  	ss.source_files = "ACMECrypt/src/NSString+ACMEHmac.{h,m}"
+  	ss.requires_arc = true
+  	ss.dependency 'ACMECrypt/ACMEHMACNSData'
   end
   
   s.subspec 'ACMEHMAC' do |ss|
