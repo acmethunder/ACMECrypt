@@ -229,7 +229,7 @@ static NSString * const kTestMD5 = @"858be8b0c08700867c623d1960165ddd";
 
 -(void)testHashNilMD5 {
 	NSData *data = nil;
-	NSString *md5 = (__bridge NSString *)(ACMHash((__bridge CFDataRef)data,0));
+	NSData *md5 = (__bridge NSData *)(ACMHash((__bridge CFDataRef)data,0));
 	XCTAssertNil(md5, @"" );
 }
 
