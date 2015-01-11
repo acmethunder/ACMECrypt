@@ -18,6 +18,8 @@
 		513D8D13191B0D66003FAA45 /* NSData+ACMEHash.m in Sources */ = {isa = PBXBuildFile; fileRef = 513D8D12191B0D66003FAA45 /* NSData+ACMEHash.m */; };
 		5151358817F51AE9007CF5A6 /* rsa_private_key.p12 in Resources */ = {isa = PBXBuildFile; fileRef = 5151358617F51AE9007CF5A6 /* rsa_private_key.p12 */; };
 		5151358917F51AE9007CF5A6 /* rsa_public_key.der in Resources */ = {isa = PBXBuildFile; fileRef = 5151358717F51AE9007CF5A6 /* rsa_public_key.der */; };
+		51ADB4951A5F6DAB009AB152 /* ACMESignTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 51ADB4941A5F6DAA009AB152 /* ACMESignTests.m */; };
+		51ADB4981A5F6F25009AB152 /* ACMERSASign.c in Sources */ = {isa = PBXBuildFile; fileRef = 51ADB4961A5F6F25009AB152 /* ACMERSASign.c */; };
 		51B8BA4718EF96C20003A4E9 /* ACMEHash.c in Sources */ = {isa = PBXBuildFile; fileRef = 51B8BA4618EF96C20003A4E9 /* ACMEHash.c */; };
 		51B8BA4818EF96C20003A4E9 /* ACMEHash.c in Sources */ = {isa = PBXBuildFile; fileRef = 51B8BA4618EF96C20003A4E9 /* ACMEHash.c */; };
 		51B8BA4918EF96C20003A4E9 /* ACMEHash.c in Sources */ = {isa = PBXBuildFile; fileRef = 51B8BA4618EF96C20003A4E9 /* ACMEHash.c */; };
@@ -80,6 +82,9 @@
 		513D8D12191B0D66003FAA45 /* NSData+ACMEHash.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+ACMEHash.m"; sourceTree = "<group>"; };
 		5151358617F51AE9007CF5A6 /* rsa_private_key.p12 */ = {isa = PBXFileReference; lastKnownFileType = file; path = rsa_private_key.p12; sourceTree = "<group>"; };
 		5151358717F51AE9007CF5A6 /* rsa_public_key.der */ = {isa = PBXFileReference; lastKnownFileType = file; path = rsa_public_key.der; sourceTree = "<group>"; };
+		51ADB4941A5F6DAA009AB152 /* ACMESignTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACMESignTests.m; sourceTree = "<group>"; };
+		51ADB4961A5F6F25009AB152 /* ACMERSASign.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ACMERSASign.c; sourceTree = "<group>"; };
+		51ADB4971A5F6F25009AB152 /* ACMERSASign.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACMERSASign.h; sourceTree = "<group>"; };
 		51B8BA4618EF96C20003A4E9 /* ACMEHash.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ACMEHash.c; sourceTree = "<group>"; };
 		51B8BA4A18EF96D30003A4E9 /* ACMEHash.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ACMEHash.h; sourceTree = "<group>"; };
 		51B8BA4B18EFA7590003A4E9 /* ACMESymmetric.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ACMESymmetric.h; sourceTree = "<group>"; };
@@ -233,6 +238,8 @@
 				513D8D0F191B0704003FAA45 /* NSData+ACMEHmac.m */,
 				51DF57231916D3AD009552D5 /* ACMEHelpMe.h */,
 				51DF57241916D3AD009552D5 /* ACMEHelpMe.m */,
+				51ADB4961A5F6F25009AB152 /* ACMERSASign.c */,
+				51ADB4971A5F6F25009AB152 /* ACMERSASign.h */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -263,6 +270,7 @@
 			children = (
 				51E2B64017F3C2DA00E382D0 /* ACMEEncryptTests.m */,
 				51E2B63B17F3C2DA00E382D0 /* Supporting Files */,
+				51ADB4941A5F6DAA009AB152 /* ACMESignTests.m */,
 			);
 			path = AMCEAssymTests;
 			sourceTree = "<group>";
@@ -435,8 +443,10 @@
 			files = (
 				51B8BA4D18EFA76C0003A4E9 /* ACMESymmetric.c in Sources */,
 				51395A0C191073D500877892 /* NSString+ACMEHash.m in Sources */,
+				51ADB4951A5F6DAB009AB152 /* ACMESignTests.m in Sources */,
 				51DF57251916D3AD009552D5 /* ACMEHelpMe.m in Sources */,
 				51DF571B1916A32E009552D5 /* ACMEHmac.c in Sources */,
+				51ADB4981A5F6F25009AB152 /* ACMERSASign.c in Sources */,
 				51DF57201916ABC9009552D5 /* NSString+ACMEHmac.m in Sources */,
 				51148DD9182D576B00E61925 /* ACMEEncode.c in Sources */,
 				51B8BA4718EF96C20003A4E9 /* ACMEHash.c in Sources */,
