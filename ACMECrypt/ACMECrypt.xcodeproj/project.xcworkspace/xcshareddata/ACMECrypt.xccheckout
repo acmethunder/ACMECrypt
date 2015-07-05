@@ -11,17 +11,17 @@
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>A580F731B1ADB74532198AD58089FF5D99856C76</key>
-		<string>ssh://github.com/mdewolfe/ACMECrypt.git</string>
+		<string>github.com:mdewolfe/ACMECrypt.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>ACMECrypt/ACMECrypt.xcodeproj/project.xcworkspace</string>
+	<string>ACMECrypt/ACMECrypt.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>A580F731B1ADB74532198AD58089FF5D99856C76</key>
 		<string>../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>ssh://github.com/mdewolfe/ACMECrypt.git</string>
+	<string>github.com:mdewolfe/ACMECrypt.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>

@@ -7,6 +7,9 @@
 //
 
 #include "ACMERSASign.h"
+
+#include "ACMEHash.h"
+
 ///*
 //enum
 //{
@@ -54,94 +57,244 @@ bool acme_supported_padding(SecPadding padding) {
     bool isGood;
     
     switch ( padding ) {
-        case kSecPaddingNone        :
-        case kSecPaddingPKCS1       :
-        case kSecPaddingOAEP        :
         case kSecPaddingPKCS1SHA1   :
         case kSecPaddingPKCS1SHA224 :
         case kSecPaddingPKCS1SHA256 :
         case kSecPaddingPKCS1SHA384 :
-        case kSecPaddingPKCS1SHA512 : isGood = true;
+        case kSecPaddingPKCS1SHA512 :
+            isGood = true;
             break;
+        case kSecPaddingNone     :
+        case kSecPaddingPKCS1    :
+        case kSecPaddingOAEP     :
         case kSecPaddingPKCS1MD2 :
         case kSecPaddingPKCS1MD5 :
-        default                  : isGood = false;
+        default                  :
+            isGood = false;
             break;
     }
     
     return isGood;
 }
 
-CFDataRef acme_sign_data(CFDataRef data, SecPadding padding, SecKeyRef signKey) {
-    CFDataRef finalData = NULL;
-    
-    CFIndex dataLength = ( data != NULL ? CFDataGetLength(data) : 0 );
-    
-    if ( (signKey != NULL) && (dataLength > 0) && acme_supported_padding(padding) ) {
-        size_t keySize = SecKeyGetBlockSize(signKey);
-        
-        size_t finalRawLength;
-        if ( padding == kSecPaddingPKCS1 ) {
-            finalRawLength = dataLength - keySize - 11;
-        }
-        else {
-            finalRawLength = (size_t)dataLength;
-        }
-        
-        const uint8_t *rawBytes = CFDataGetBytePtr(data);
-        uint8_t *signBytes = malloc(keySize);
-        OSStatus status =  SecKeyRawSign(
-                                         signKey,
-                                         padding,
-                                         rawBytes,
-                                         finalRawLength,
-                                         signBytes,
-                                         &keySize );
-        if ( status == errSecSuccess ) {
-            size_t signLength;
-            switch ( padding ) {
-                case kSecPaddingPKCS1SHA256 : signLength = CC_SHA256_DIGEST_LENGTH;
-                    break;
-                default: signLength = 0;
-                    break;
-            }
+CFDataRef acme_sign_hash_data(CFDataRef hashData, SecPadding padding, CFDataRef rawData, SecKeyRef key) {
+    CFDataRef signature = NULL;
 
-            finalData = CFDataCreate(kCFAllocatorDefault, signBytes, (CFIndex)signLength);
-        }
-        
-        if ( signBytes ) {
-            free(signBytes);
+    if ( hashData && acme_supported_padding(padding) && rawData && key ) {
+        const void *hashBytes = CFDataGetBytePtr(hashData);
+        size_t hashLength = CFDataGetLength(hashData);
+
+        size_t signatureSize = SecKeyGetBlockSize(key);
+        void *signatureBytes = malloc(signatureSize);
+        memset(signatureBytes, 0, signatureSize);
+
+        OSStatus status = SecKeyRawSign(
+                                        key,
+                                        padding,
+                                        hashBytes,
+                                        hashLength,
+                                        signatureBytes,
+                                        &signatureSize );
+
+        if ( status == errSecSuccess ) {
+            signature = CFDataCreate( kCFAllocatorDefault, signatureBytes, (CFIndex)signatureSize );
         }
     }
-    
-    
-    return finalData;
+
+    return signature;
 }
 
-bool acme_verify_signature(CFDataRef signedData, CFDataRef hashData, SecPadding padding, SecKeyRef publicKey) {
-    bool isgood;
-    
-    CFIndex signLength = ( signedData ? CFDataGetLength(signedData) : 0 );
-    CFIndex hashLength = ( hashData ? CFDataGetLength(hashData) : 0 );
-    if ( (hashData > 0) && (signLength > 0) && publicKey && acme_supported_padding(padding) ) {
-        
-        const uint8_t *hashBytes   = CFDataGetBytePtr(hashData);
-        const uint8_t *signedBytes = CFDataGetBytePtr(signedData);
-        OSStatus status = SecKeyRawVerify(
-                                          publicKey,
-                                          padding,
-                                          hashBytes,
-                                          (size_t)hashLength,
-                                          signedBytes,
-                                          (size_t)signLength );
-        
-        isgood = ( status == errSecSuccess );
+CFDataRef acme_sha1_sign(CFDataRef data, SecKeyRef key) {
+    CFDataRef hashData = ( key ? ACMHash(data, ACMHashAlgSHA1) : NULL );
+
+    CFDataRef signature;
+    if ( hashData ) {
+        signature = acme_sign_hash_data(
+                                        hashData,
+                                        kSecPaddingPKCS1SHA1,
+                                        data,
+                                        key );
+        CFRelease(hashData);
     }
     else {
-        isgood = false;
+        signature = NULL;
     }
-    
-    
-    
-    return isgood;
+
+    return signature;
+}
+
+CFDataRef acme_sha224_sign(CFDataRef data, SecKeyRef key) {
+    CFDataRef hashData = ( key ? ACMHash(data, ACMHashAlgSHA224) : NULL );
+
+    CFDataRef signature;
+    if ( hashData ) {
+        signature = acme_sign_hash_data(
+                                        hashData,
+                                        kSecPaddingPKCS1SHA224,
+                                        data,
+                                        key );
+        CFRelease(hashData);
+    }
+    else {
+        signature = NULL;
+    }
+
+    return signature;
+
+}
+
+CFDataRef acme_sha256_sign(CFDataRef data, SecKeyRef key) {
+    CFDataRef hashData = ( key ? ACMHash(data, ACMHashAlgSHA256) : NULL );
+
+    CFDataRef signature;
+    if ( hashData ) {
+        signature = acme_sign_hash_data(
+                                        hashData,
+                                        kSecPaddingPKCS1SHA256,
+                                        data,
+                                        key );
+        CFRelease(hashData);
+    }
+    else {
+        signature = NULL;
+    }
+
+    return signature;
+}
+
+CFDataRef acme_sha384_sign(CFDataRef data, SecKeyRef key) {
+    CFDataRef hashData = ( key ? ACMHash(data, ACMHashAlgSHA384) : NULL );
+
+    CFDataRef signature;
+    if ( hashData ) {
+        signature = acme_sign_hash_data(
+                                        hashData,
+                                        kSecPaddingPKCS1SHA384,
+                                        data,
+                                        key );
+        CFRelease(hashData);
+    }
+    else {
+        signature = NULL;
+    }
+
+    return signature;
+}
+
+CFDataRef acme_sha512_sign(CFDataRef data, SecKeyRef key) {
+    CFDataRef hashData = ( key ? ACMHash(data, ACMHashAlgSHA512) : NULL );
+
+    CFDataRef signature;
+    if ( hashData ) {
+        signature = acme_sign_hash_data(
+                                        hashData,
+                                        kSecPaddingPKCS1SHA512,
+                                        data,
+                                        key );
+        CFRelease(hashData);
+    }
+    else {
+        signature = NULL;
+    }
+
+    return signature;
+}
+
+bool acme_verify_hash_data(CFDataRef hashData, SecPadding padding, CFDataRef signature, SecKeyRef key) {
+    bool verified = false;
+
+    if ( hashData && acme_supported_padding(padding) && signature && key ) {
+        const uint8_t *hashBytes = CFDataGetBytePtr(hashData);
+        size_t hashLength = (size_t)CFDataGetLength(hashData);
+
+        const uint8_t *signatureBytes = CFDataGetBytePtr(signature);
+        size_t signatureLength = CFDataGetLength(signature);
+
+        OSStatus status = SecKeyRawVerify(
+                                          key,
+                                          padding,
+                                          hashBytes,
+                                          hashLength,
+                                          signatureBytes,
+                                          signatureLength );
+
+        verified = ( status == errSecSuccess );
+    }
+
+    return verified;
+}
+
+bool acme_verify_sha1(CFDataRef rawData, CFDataRef signature, SecKeyRef key) {
+    CFDataRef hash = ( (signature && key) ? ACMHash(rawData, ACMHashAlgSHA1) : NULL );
+
+    bool verified;
+    if ( hash ) {
+        verified = acme_verify_hash_data(hash, kSecPaddingPKCS1SHA1, signature, key);
+        CFRelease(hash);
+    }
+    else {
+        verified = false;
+    }
+
+    return verified;
+}
+
+bool acme_verify_sha224(CFDataRef rawData, CFDataRef signature, SecKeyRef key) {
+    CFDataRef hash = ( (signature && key) ? ACMHash(rawData, ACMHashAlgSHA224) : NULL );
+
+    bool verified;
+    if ( hash ) {
+        verified = acme_verify_hash_data(hash, kSecPaddingPKCS1SHA224, signature, key);
+        CFRelease(hash);
+    }
+    else {
+        verified = false;
+    }
+
+    return verified;
+}
+
+bool acme_verify_sha256(CFDataRef rawData, CFDataRef signature, SecKeyRef key) {
+    CFDataRef hash = ( (signature && key) ? ACMHash(rawData, ACMHashAlgSHA256) : NULL );
+
+    bool verified;
+    if ( hash ) {
+        verified = acme_verify_hash_data(hash, kSecPaddingPKCS1SHA256, signature, key);
+        CFRelease(hash);
+    }
+    else {
+        verified = false;
+    }
+
+    return verified;
+}
+
+bool acme_verify_sha384(CFDataRef rawData, CFDataRef signature, SecKeyRef key) {
+    CFDataRef hash = ( (signature && key) ? ACMHash(rawData, ACMHashAlgSHA384) : NULL );
+
+    bool verified;
+    if ( hash ) {
+        verified = acme_verify_hash_data(hash, kSecPaddingPKCS1SHA384, signature, key);
+        CFRelease(hash);
+    }
+    else {
+        verified = false;
+    }
+
+    return verified;
+}
+
+bool acme_verify_sha512(CFDataRef rawData, CFDataRef signature, SecKeyRef key) {
+    CFDataRef hash = ( (signature && key) ? ACMHash(rawData, ACMHashAlgSHA512) : NULL );
+
+    bool verified;
+    if ( hash ) {
+        verified = acme_verify_hash_data(hash, kSecPaddingPKCS1SHA512, signature, key);
+        CFRelease(hash);
+    }
+    else {
+        verified = false;
+    }
+
+    return verified;
 }

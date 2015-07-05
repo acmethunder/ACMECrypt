@@ -1,4 +1,4 @@
-//
+
 //  ACMESignTests.m
 //  ACMECrypt
 //
@@ -10,11 +10,13 @@
 #import <XCTest/XCTest.h>
 #include "ACMERSASign.h"
 #include "ACMEHash.h"
+#include "ACMECrypt.h"
 
 @interface ACMESignTests : XCTestCase
 
 @property NSData *sampleData;
 @property SecKeyRef privateKey;
+@property SecKeyRef publicKey;
 
 @end
 
@@ -51,6 +53,12 @@
         XCTAssertFalse( privateKey == NULL, @"" );
         self.privateKey = privateKey;
     }
+    
+    NSURL *keypath = [bundle URLForResource:@"rsa_public_key" withExtension:@"der"];
+    NSData *certData = [[NSData alloc] initWithContentsOfURL:keypath];
+    SecKeyRef publickey = ACMGetPublicKeyX509((__bridge CFDataRef)certData);
+    XCTAssertFalse( publickey == NULL, @"" );
+    self.publicKey = publickey;
 }
 
 - (void)tearDown {
@@ -58,18 +66,83 @@
     [super tearDown];
     
     CFRelease(self.privateKey);
+    CFRelease(self.publicKey);
 }
 
 #pragma mark RSA Signature
 
 - (void) testSanityCheck {
     NSData *sampleData = self.sampleData;
-    NSData *hashedData = CFBridgingRelease(ACMHash((__bridge CFDataRef)(sampleData), ACMHashAlgSHA256));
-    XCTAssertNotNil( hashedData );
     SecKeyRef privateKey = self.privateKey;
-    CFDataRef signedRaw = acme_sign_data((__bridge CFDataRef)(hashedData), kSecPaddingPKCS1SHA256, privateKey);
-    NSData *signedData = CFBridgingRelease(signedRaw);
-    XCTAssertNotNil( signedData );
+    NSData *hashData = CFBridgingRelease(ACMHash((__bridge CFDataRef)(sampleData), ACMHashAlgSHA256));
+    NSData *signature = CFBridgingRelease(acme_sign_hash_data(
+                                                              (__bridge CFDataRef)(hashData),
+                                                              kSecPaddingPKCS1SHA256,
+                                                              (__bridge CFDataRef)(sampleData),
+                                                              privateKey) );
+    XCTAssertNotNil( signature );
+
+    SecKeyRef publicKey = self.publicKey;
+    bool verified = acme_verify_hash_data(
+                                          (__bridge CFDataRef)(hashData),
+                                          kSecPaddingPKCS1SHA256,
+                                          (__bridge CFDataRef)(signature),
+                                          publicKey );
+    XCTAssertTrue( verified );
 }
 
+- (void) testSHA1SignAndVerify {
+    NSData *sampleData = self.sampleData;
+    SecKeyRef privateKey = self.privateKey;
+    NSData *signature = (__bridge NSData *)(acme_sha1_sign((__bridge CFDataRef)(sampleData), privateKey));
+    XCTAssertNotNil( signature );
+
+    SecKeyRef publicKey = self.publicKey;
+    bool verified = acme_verify_sha1((__bridge CFDataRef)(sampleData), (__bridge CFDataRef)(signature), publicKey);
+    XCTAssertTrue( verified );
+}
+
+- (void) testSHA224SignAndVerify {
+    NSData *sampleData = self.sampleData;
+    SecKeyRef privateKey = self.privateKey;
+    NSData *signature = CFBridgingRelease(acme_sha224_sign((__bridge CFDataRef)(sampleData), privateKey));
+    XCTAssertNotNil( signature );
+
+    SecKeyRef publicKey = self.publicKey;
+    bool verified = acme_verify_sha224((__bridge CFDataRef)(sampleData), (__bridge CFDataRef)(signature), publicKey);
+    XCTAssertTrue( verified );
+}
+
+- (void) testSHA256SignAndVerify {
+    NSData *sampleData = self.sampleData;
+    SecKeyRef privateKey = self.privateKey;
+    NSData *signature = CFBridgingRelease(acme_sha256_sign((__bridge CFDataRef)(sampleData), privateKey));
+    XCTAssertNotNil( signature );
+
+    SecKeyRef publicKey = self.publicKey;
+    bool verified = acme_verify_sha256((__bridge CFDataRef)(sampleData), (__bridge CFDataRef)(signature), publicKey);
+    XCTAssertTrue( verified );
+}
+
+- (void) testSignSHA384SignAndVerify {
+    SecKeyRef privateKey = self.privateKey;
+    NSData *sampleData = self.sampleData;
+    NSData *signature = CFBridgingRelease(acme_sha384_sign((__bridge CFDataRef)(sampleData), privateKey));
+    XCTAssertNotNil( signature );
+
+    SecKeyRef publicKey = self.publicKey;
+    bool verified = acme_verify_sha384((__bridge CFDataRef)(sampleData), (__bridge CFDataRef)(signature), publicKey);
+    XCTAssertTrue( verified );
+}
+
+- (void) testSHA512SignandVerify {
+    NSData *sampleData = self.sampleData;
+    SecKeyRef privateKey = self.privateKey;
+    NSData *signature = CFBridgingRelease(acme_sha512_sign((__bridge CFDataRef)(sampleData), privateKey));
+    XCTAssertNotNil( signature );
+
+    SecKeyRef publicKey = self.publicKey;
+    bool verified = acme_verify_sha512((__bridge CFDataRef)(sampleData), (__bridge CFDataRef)(signature), publicKey);
+    XCTAssertTrue( verified );
+}
 @end
