@@ -16,6 +16,10 @@
 
 #pragma mark Main Hash Method
 
+- (NSData*) acm_hashRaw:(ACMHashAlg)alg {
+    return ( acm_hash_valid_algorithm(alg) ? CFBridgingRelease(ACMHash((__bridge CFDataRef)(self), alg)) : nil );
+}
+
 -(NSString*)acm_hash:(ACMHashAlg)alg {
     NSString *hashString = nil;
     if ( acm_hash_valid_algorithm(alg) ) {
@@ -26,32 +30,66 @@
     return hashString;
 }
 
+- (NSString*) acm_toHex {
+    return CFBridgingRelease(ACMDataToHEX((__bridge CFDataRef)(self), false));
+}
+
 #pragma mark MD5
 
+- (NSData*) acm_MD5Raw {
+    return [self acm_hashRaw:ACMHashAlgMD5];
+}
+
 - (NSString*) acm_md5 {
-    return [self acm_hash:ACMHashAlgMD5];
+    NSData *temp = [self acm_MD5Raw];
+    return [temp acm_toHex];
 }
 
 #pragma mark SHA
 
+- (NSData*) acm_sha1Raw {
+    return [self acm_hashRaw:ACMHashAlgSHA1];
+}
+
 -(NSString*)acm_sha1 {
-    return [self acm_hash:ACMHashAlgSHA1];
+    NSData *temp = [self acm_sha1Raw];
+    return [temp acm_toHex];
+}
+
+- (NSData*) acm_sha224Raw {
+    return [self acm_hashRaw:ACMHashAlgSHA224];
 }
 
 -(NSString*)acm_sha224 {
-    return [self acm_hash:ACMHashAlgSHA224];
+    NSData *temp = [self acm_sha224Raw];
+    return [temp acm_toHex];
+}
+
+- (NSData*) acm_sha256Raw {
+    return [self acm_hashRaw:ACMHashAlgSHA256];
 }
 
 -(NSString*)acm_sha256 {
-    return [self acm_hash:ACMHashAlgSHA256];
+    NSData *temp = [self acm_sha256Raw];
+    return [temp acm_toHex];
+}
+
+- (NSData*) acm_sha384Raw {
+    return [self acm_hashRaw:ACMHashAlgSHA384];
 }
 
 -(NSString*)acm_sha384 {
-    return [self acm_hash:ACMHashAlgSHA384];
+    NSData *temp = [self acm_sha384Raw];
+    return [temp acm_toHex];
+}
+
+- (NSData*) acm_sha512Raw {
+    return [self acm_hashRaw:ACMHashAlgSHA512];
 }
 
 -(NSString*)acm_sha512 {
-    return [self acm_hash:ACMHashAlgSHA512];
+    NSData *temp = [self acm_sha512Raw];
+    return [temp acm_toHex];
 }
 
 @end
