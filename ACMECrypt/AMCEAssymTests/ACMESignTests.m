@@ -6,9 +6,10 @@
 //
 //
 
-#import <UIKit/UIKit.h>
-#import <XCTest/XCTest.h>
-#include "ACMERSASign.h"
+@import UIKit;
+@import XCTest;
+
+#include "ACMESign.h"
 #include "ACMEHash.h"
 #include "ACMECrypt.h"
 
@@ -144,5 +145,10 @@
     SecKeyRef publicKey = self.publicKey;
     bool verified = acme_verify_sha512((__bridge CFDataRef)(sampleData), (__bridge CFDataRef)(signature), publicKey);
     XCTAssertTrue( verified );
+}
+
+#pragma mark NSData RSA Signature
+
+- (void) testNSDataSignatureSanityCheck {
 }
 @end

@@ -35,4 +35,4 @@ bool acme_verify_sha256(CFDataRef rawData, CFDataRef signature, SecKeyRef signKe
 bool acme_verify_sha384(CFDataRef rawData, CFDataRef signature, SecKeyRef key);
 bool acme_verify_sha512(CFDataRef rawData, CFDataRef signature, SecKeyRef key);
 
-#endif /* defined(__ACMECrypt__ACMERSASign__) */
+#endif /* defined(__ACMECrypt__ACMESign__) */

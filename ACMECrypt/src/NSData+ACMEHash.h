@@ -20,6 +20,8 @@
  */
 @interface NSData (ACMEHash)
 
+- (NSData*) acm_hashRaw:(ACMHashAlg)alg;
+
 /**
  *  @method
  *      acm_hash:
