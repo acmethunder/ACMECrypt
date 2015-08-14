@@ -1,5 +1,7 @@
 language: objective-c
+before_script:
+    - gem install xcpretty --no-rdoc --no-ri --no-document --quiet
 script:
-    - xcodebuild test -project ACMECrypt/ACMECrypt.xcodeproj -scheme AMCEAssymTests -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO
+    - xcodebuild test -project ACMECrypt/ACMECrypt.xcodeproj -scheme AMCEAssymTests -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO | xcpretty -c && exit ${PIPESTATUS[0]}
 
 
