@@ -1,7 +1,4 @@
 language: objective-c
-before_install:
-    - brew update
-    - brew install xctool
 script:
     - bash xctool_test.sh
 
