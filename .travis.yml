@@ -1,6 +1,7 @@
 language: objective-c
-before_script:
-    - gem install xcpretty --no-rdoc --no-ri --no-document --quiet
+before_install:
+    - brew update
+    - brew install xctool
 script:
-    - xcodebuild clean test -project ACMECrypt/ACMECrypt.xcodeproj -scheme AMCEAssymTests -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO | xcpretty -c && exit ${PIPESTATUS[0]}
+    - bash xctool_test.sh
 
